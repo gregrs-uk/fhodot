@@ -1,0 +1,89 @@
+{
+  "name": "fhodot",
+  "description": "Food hygiene open data OpenStreetMap tool",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "clean-webpack-plugin": "^3.0.0",
+    "css-loader": "^4.2.0",
+    "eslint": "^7.5.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "file-loader": "^6.0.0",
+    "html-webpack-plugin": "^4.3.0",
+    "istanbul-instrumenter-loader": "^3.0.1",
+    "karma": "^5.1.1",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-coverage": "^2.0.3",
+    "karma-mocha": "^2.0.1",
+    "karma-sourcemap-loader": "^0.3.7",
+    "karma-webpack": "^4.0.2",
+    "leaflet": "^1.7.1",
+    "leaflet.markercluster": "^1.4.1",
+    "mocha": "^8.1.0",
+    "mocha-loader": "^5.1.2",
+    "sinon": "^9.0.2",
+    "sinon-chai": "^3.5.0",
+    "source-map-support": "^0.5.19",
+    "style-loader": "^1.2.1",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12",
+    "webpack-merge": "^5.1.1"
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "es2020": true
+    },
+    "extends": [
+      "airbnb-base"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 11
+    },
+    "rules": {
+      "import/no-extraneous-dependencies": [
+        "error",
+        {
+          "devDependencies": true
+        }
+      ],
+      "max-len": [
+        "error",
+        79,
+        {
+          "ignoreUrls": true,
+          "ignorePattern": "// eslint-disable-line"
+        }
+      ],
+      "quotes": [
+        "error",
+        "double",
+        {
+          "allowTemplateLiterals": true
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "build": "npm run clean && webpack --config webpack.prod.js",
+    "clean": "rm -rf fhodot/app/ui/dist/*",
+    "lint": "eslint *.js fhodot/app/ui/src/*.js fhodot/app/ui/src/lib/*.js",
+    "stats": "webpack --json --config webpack.prod.js > stats.json",
+    "test": "karma start",
+    "watch": "webpack --watch --config webpack.dev.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gregrs-uk/fhodot.git"
+  },
+  "author": "Greg",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/gregrs-uk/fhodot/issues"
+  },
+  "homepage": "https://github.com/gregrs-uk/fhodot"
+}

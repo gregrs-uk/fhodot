@@ -1,0 +1,86 @@
+<AuthorityDetailCollection xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.datacontract.org/2004/07/FHRS.Model.Detailed">
+  <links xmlns="http://schemas.datacontract.org/2004/07/FHRS.Model.MetaLinks">
+    <link>
+      <href>http://api.ratings.food.gov.uk/authorities</href>
+      <rel>self</rel>
+    </link>
+  </links>
+  <meta xmlns="http://schemas.datacontract.org/2004/07/FHRS.Model.MetaLinks">
+    <dataSource>API</dataSource>
+    <extractDate>2020-07-14T09:40:59.4800269+01:00</extractDate>
+    <itemCount>381</itemCount>
+    <pageNumber>1</pageNumber>
+    <pageSize>381</pageSize>
+    <returncode>OK</returncode>
+    <totalCount>381</totalCount>
+    <totalPages>1</totalPages>
+  </meta>
+  <authorities>
+    <authority>
+      <links xmlns="http://schemas.datacontract.org/2004/07/FHRS.Model.MetaLinks">
+        <link>
+          <href>http://api.ratings.food.gov.uk/authorities/197</href>
+          <rel>self</rel>
+        </link>
+      </links>
+      <CreationDate>2010-08-17T15:30:24.87</CreationDate>
+      <Email>commercial@aberdeencity.gov.uk</Email>
+      <EstablishmentCount>2021</EstablishmentCount>
+      <FileName>http://ratings.food.gov.uk/OpenDataFiles/FHRS760en-GB.xml</FileName>
+      <FileNameWelsh i:nil="true"/>
+      <FriendlyName>aberdeen-city</FriendlyName>
+      <LastPublishedDate>2020-06-30T00:30:51.223</LastPublishedDate>
+      <LocalAuthorityId>197</LocalAuthorityId>
+      <LocalAuthorityIdCode>760</LocalAuthorityIdCode>
+      <Name>Aberdeen City</Name>
+      <RegionName>Scotland</RegionName>
+      <SchemeType>2</SchemeType>
+      <SchemeUrl/>
+      <Url>http://www.aberdeencity.gov.uk</Url>
+    </authority>
+    <authority>
+      <links xmlns="http://schemas.datacontract.org/2004/07/FHRS.Model.MetaLinks">
+        <link>
+          <href>http://api.ratings.food.gov.uk/authorities/198</href>
+          <rel>self</rel>
+        </link>
+      </links>
+      <CreationDate>2010-08-17T15:30:24.87</CreationDate>
+      <Email>environmental@aberdeenshire.gov.uk</Email>
+      <EstablishmentCount>2177</EstablishmentCount>
+      <FileName>http://ratings.food.gov.uk/OpenDataFiles/FHRS761en-GB.xml</FileName>
+      <FileNameWelsh i:nil="true"/>
+      <FriendlyName>aberdeenshire</FriendlyName>
+      <LastPublishedDate>2020-06-26T00:30:30.097</LastPublishedDate>
+      <LocalAuthorityId>198</LocalAuthorityId>
+      <LocalAuthorityIdCode>761</LocalAuthorityIdCode>
+      <Name>Aberdeenshire</Name>
+      <RegionName>Scotland</RegionName>
+      <SchemeType>2</SchemeType>
+      <SchemeUrl/>
+      <Url>http://www.aberdeenshire.gov.uk/</Url>
+    </authority>
+    <authority>
+      <links xmlns="http://schemas.datacontract.org/2004/07/FHRS.Model.MetaLinks">
+        <link>
+          <href>http://api.ratings.food.gov.uk/authorities/277</href>
+          <rel>self</rel>
+        </link>
+      </links>
+      <CreationDate>2010-08-17T15:30:24.87</CreationDate>
+      <Email>publichealth.regulation@adur-worthing.gov.uk</Email>
+      <EstablishmentCount>458</EstablishmentCount>
+      <FileName>http://ratings.food.gov.uk/OpenDataFiles/FHRS323en-GB.xml</FileName>
+      <FileNameWelsh i:nil="true"/>
+      <FriendlyName>adur</FriendlyName>
+      <LastPublishedDate>2020-07-09T00:31:10.88</LastPublishedDate>
+      <LocalAuthorityId>277</LocalAuthorityId>
+      <LocalAuthorityIdCode>323</LocalAuthorityIdCode>
+      <Name>Adur</Name>
+      <RegionName>South East</RegionName>
+      <SchemeType>1</SchemeType>
+      <SchemeUrl/>
+      <Url>http://www.adur-worthing.gov.uk</Url>
+    </authority>
+  </authorities>
+</AuthorityDetailCollection>

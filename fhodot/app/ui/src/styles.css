@@ -1,0 +1,227 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500;700&family=Roboto:wght@300;400;500;700&display=swap');
+
+/**
+ * colour palette from hclwizard.org
+ * qualitative, n: 3, h: 0-230, c: 100, l: 75
+ * see also marker_styling.js
+ */
+
+/* FONTS */
+body {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+}
+code {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 95%;
+}
+h1 {
+  font-size: 180%;
+  font-weight: 700;
+}
+h2 {
+  font-size: 140%;
+  font-weight: 700;
+}
+h2 code {
+  font-weight: 700;
+}
+footer > p {
+  font-weight: 300;
+  color: rgb(120, 120, 120);
+  font-size: 80%;
+}
+p.footnote {
+  font-weight: 300;
+  color: rgb(80, 80, 80);
+  font-size: 90%;
+}
+p.footnote code {
+  background-color: rgb(240, 240, 240);
+  margin: 0em -0.1em;
+  padding: 0em 0.1em;
+  white-space: pre; /* show multiple spaces in original postcode */
+}
+a, .action {
+  color: rgb(0, 0, 180);
+  text-decoration: underline;
+  cursor: pointer;
+}
+a:hover, .action:hover {
+  color: rgb(0, 0, 255);
+  text-decoration: none;
+}
+
+/* STRUCTURAL */
+body {
+  margin: 0px auto;
+  padding: 10px;
+  max-width: 1200px;
+}
+#container {
+  display: flex;
+  height: 500px;
+}
+#map {
+  flex-basis: 890px;
+}
+#inspector {
+  flex-basis: 300px;
+  min-width: 250px;
+  padding-left: 10px;
+  overflow-y: scroll;
+}
+footer {
+  margin-top: 2em;
+}
+
+/* MAP: attribution */
+.leaflet-control-attribution {
+  text-align: right;
+}
+
+/* MAP: marker clusters */
+.marker-cluster { }
+.marker-cluster div {
+  background-color: rgba(255, 255, 255, 1); /* overridden below */
+  width: 15px;
+  height: 15px;
+  border: 1px solid rgba(0, 0, 0, 1);
+  border-radius: 10px;
+  /* position cluster marker */
+  margin-left: -2px;
+  margin-top: -2px;
+  text-align: center;
+  font: 16px "Helvetica Neue", Arial, Helvetica, sans-serif;
+}
+.marker-cluster.bad div {
+  background-color: rgba(255, 137, 172, 0.75);
+}
+.marker-cluster.matched div {
+  background-color: rgba(122, 206, 0, 0.75);
+}
+.marker-cluster.unmatched div {
+  background-color: rgba(0, 203, 255, 0.75);
+}
+.marker-cluster span {
+  /* position + text */
+  position: relative;
+  top: -2.5px;
+}
+
+/* MAP: edit control */
+#map div.leaflet-edit-control {
+  margin-bottom: 20px;
+}
+#map div.leaflet-edit-control p {
+  margin: 0px;
+  padding: 0em 0.6em;
+  border-radius: 4px;
+  height: 26px;
+  line-height: 26px;
+  background: rgb(255, 255, 255);
+}
+
+/* INSPECTOR: direct children */
+#inspector > div {
+  border-radius: 15px;
+  margin-bottom: 10px;
+  padding: 20px;
+}
+#inspector > div.remembered {
+  background-color: rgb(255, 255, 200);
+  border: 1px solid rgb(180, 180, 180);
+}
+#inspector > div.clicked {
+  background-color: rgba(0, 203, 255, 0.25);
+}
+#inspector > div.fhrs-id-match {
+  background-color: rgba(122, 206, 0, 0.25);
+}
+#inspector > div.fhrs-id-mismatch {
+  background-color: rgba(255, 225, 234, 1);
+}
+#inspector > div.suggested-match {
+  background-color: rgb(255, 255, 255);
+  border: 1px solid rgb(180, 180, 180);
+}
+#inspector > div.link {
+  padding: 5px 20px;
+}
+#inspector > p.zoom-message {
+  margin-top: 0px;
+  margin-bottom: 5px;
+  padding: 15px 20px;
+  background-color: rgb(255, 255, 200);
+  border: 1px solid rgb(180, 180, 180);
+  border-radius: 15px;
+}
+#inspector > p.footnote {
+  margin: 10px 5px;
+}
+
+/* INSPECTOR: within divs */
+#inspector > div > h3 {
+  font-size: 120%;
+  font-weight: 500;
+  margin: 0px;
+  margin-bottom: 0.6em;
+}
+#inspector > div > div.data, #inspector > div > div.actions {
+  margin-bottom: 0.8em;
+}
+#inspector > div > div:last-child {
+  margin-bottom: 0em;
+}
+#inspector > div p {
+  margin: 0em;
+  margin-bottom: 0.4em;
+}
+#inspector > div p:last-child {
+  margin-bottom: 0em;
+}
+
+/* INSPECTOR: text */
+#inspector > div p.highlight-bad {
+  background-color: rgba(255, 225, 234, 1);
+  border: 1px solid rgb(255, 0, 0);
+  border-radius: 5px;
+  margin: 0.4em -0.3em;
+  padding: 0.1em 0.3em;
+}
+#inspector > div p.footnote code {
+  background-color: transparent;
+}
+#inspector span.field {
+  font-weight: 500;
+}
+#inspector span.empty-value {
+  font-weight: 300;
+  color: rgb(120, 120, 120);
+}
+
+/* GRAPHS */
+#graphs > img {
+  /* 6x4 inches (matching R script) at 96 dpi */
+  width: 576px;
+  height: 384px;
+  margin-top: 2em;
+}
+
+/* TABLES */
+table, thead {
+  border-collapse: collapse;
+  border: 1px solid rgb(180, 180, 180);
+}
+thead tr, tbody tr:nth-child(even) {
+  background-color: rgb(240, 240, 240);
+}
+th, td {
+  text-align: left;
+  padding: 0.4em;
+}
+
+/* FOOTER */
+footer > p {
+  margin: 5px 0px;
+}

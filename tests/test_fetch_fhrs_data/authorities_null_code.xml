@@ -1,0 +1,26 @@
+<AuthorityDetailCollection xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.datacontract.org/2004/07/FHRS.Model.Detailed">
+  <authorities>
+    <authority>
+      <links xmlns="http://schemas.datacontract.org/2004/07/FHRS.Model.MetaLinks">
+        <link>
+          <href>http://api.ratings.food.gov.uk/authorities/197</href>
+          <rel>self</rel>
+        </link>
+      </links>
+      <CreationDate>2010-08-17T15:30:24.87</CreationDate>
+      <Email>commercial@aberdeencity.gov.uk</Email>
+      <EstablishmentCount>2021</EstablishmentCount>
+      <FileName>http://ratings.food.gov.uk/OpenDataFiles/FHRS760en-GB.xml</FileName>
+      <FileNameWelsh i:nil="true"/>
+      <FriendlyName>aberdeen-city</FriendlyName>
+      <LastPublishedDate>2020-06-30T00:30:51.223</LastPublishedDate>
+      <LocalAuthorityId>197</LocalAuthorityId>
+      <LocalAuthorityIdCode></LocalAuthorityIdCode>
+      <Name>Aberdeen City</Name>
+      <RegionName>Scotland</RegionName>
+      <SchemeType>2</SchemeType>
+      <SchemeUrl/>
+      <Url>http://www.aberdeencity.gov.uk</Url>
+    </authority>
+  </authorities>
+</AuthorityDetailCollection>

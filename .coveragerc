@@ -1,0 +1,7 @@
+[run]
+source = fhodot/
+
+[report]
+exclude_lines =
+	pragma: no cover
+	def __repr__

@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<FHRSEstablishment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <EstablishmentCollection>
+    <EstablishmentDetail>
+      <FHRSID>1017312</FHRSID>
+      <LocalAuthorityBusinessID>EHDC12570</LocalAuthorityBusinessID>
+      <BusinessName>2 BROTHERS PIZZA</BusinessName>
+      <BusinessType>Takeaway/sandwich shop</BusinessType>
+      <BusinessTypeID>7844</BusinessTypeID>
+      <AddressLine1>699B</AddressLine1>
+      <AddressLine2>Great Northern Road</AddressLine2>
+      <AddressLine3>Aberdeen</AddressLine3>
+      <PostCode>AB24 2DU</PostCode>
+      <RatingValue>Pass</RatingValue>
+      <RatingKey>fhis_pass_en-GB</RatingKey>
+      <RatingDate>2019-10-30</RatingDate>
+      <LocalAuthorityCode></LocalAuthorityCode>
+      <LocalAuthorityName>Aberdeen City</LocalAuthorityName>
+      <LocalAuthorityWebSite>http://www.aberdeencity.gov.uk</LocalAuthorityWebSite>
+      <LocalAuthorityEmailAddress>commercial@aberdeencity.gov.uk</LocalAuthorityEmailAddress>
+      <Scores/>
+      <SchemeType>FHIS</SchemeType>
+      <NewRatingPending>False</NewRatingPending>
+      <Geocode>
+        <Longitude>-2.13817501068115</Longitude>
+        <Latitude>57.17238235473630</Latitude>
+      </Geocode>
+    </EstablishmentDetail>
+  </EstablishmentCollection>
+</FHRSEstablishment>

@@ -1,0 +1,7 @@
+{
+    "cachedir": "imposm_cache",
+    "connection": "postgis://greg@localhost/gregrs_fhodot?prefix=NONE",
+    "limitto": "uk-polygon.geojson",
+    "mapping": "imposm_mapping.yml",
+    "srid": 4326
+}

@@ -1,0 +1,1 @@
+Place the Britain and Ireland OpenStreetMap planet extract from [GeoFabrik](https://download.geofabrik.de/europe/britain-and-ireland.html) in this directory. The data can be imported using `scripts/import_osm.sh`.

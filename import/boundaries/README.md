@@ -1,0 +1,1 @@
+Place the [shapefiles](https://geoportal.statistics.gov.uk/datasets/local-authority-districts-december-2020-uk-bgc) for the ONS Local Authority Districts boundaries (BGC, i.e. 20m generalised and clipped to coastline) in this directory. The data can be imported using `scripts/import_boundaries.py`.

@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<FHRSEstablishment xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <EstablishmentCollection>
+    <EstablishmentDetail>
+      <FHRSID>982849</FHRSID>
+      <LocalAuthorityBusinessID>EHDC12463</LocalAuthorityBusinessID>
+      <BusinessName>1 &amp; 30 DONALD DEWAR COURT</BusinessName>
+      <BusinessType>Hospitals/Childcare/Caring Premises</BusinessType>
+      <BusinessTypeID>5</BusinessTypeID>
+      <AddressLine2>1 &amp; 30 Donald Dewar Court</AddressLine2>
+      <AddressLine3>Provost Fraser Drive</AddressLine3>
+      <AddressLine4>Aberdeen</AddressLine4>
+      <PostCode>AB16 5JB</PostCode>
+      <RatingValue>Pass</RatingValue>
+      <RatingKey>fhis_pass_en-GB</RatingKey>
+      <RatingDate>2017-05-15</RatingDate>
+      <LocalAuthorityCode>760</LocalAuthorityCode>
+      <LocalAuthorityName>Aberdeen City</LocalAuthorityName>
+      <LocalAuthorityWebSite>http://www.aberdeencity.gov.uk</LocalAuthorityWebSite>
+      <LocalAuthorityEmailAddress>commercial@aberdeencity.gov.uk</LocalAuthorityEmailAddress>
+      <Scores/>
+      <SchemeType>FHIS</SchemeType>
+      <NewRatingPending>False</NewRatingPending>
+      <Geocode>
+        <Longitude>-2.16749501228333</Longitude>
+        <Latitude>57.16130828857420</Latitude>
+      </Geocode>
+    </EstablishmentDetail>
+    <EstablishmentDetail>
+      <FHRSID>1017312</FHRSID>
+      <LocalAuthorityBusinessID>EHDC12570</LocalAuthorityBusinessID>
+      <BusinessName>2 BROTHERS PIZZA</BusinessName>
+      <BusinessType>Takeaway/sandwich shop</BusinessType>
+      <BusinessTypeID>7844</BusinessTypeID>
+      <AddressLine1>699B</AddressLine1>
+      <AddressLine2>Great Northern Road</AddressLine2>
+      <AddressLine3>Aberdeen</AddressLine3>
+      <PostCode>AB24 2DU</PostCode>
+      <RatingValue>Pass</RatingValue>
+      <RatingKey>fhis_pass_en-GB</RatingKey>
+      <RatingDate>2019-10-30</RatingDate>
+      <LocalAuthorityCode>760</LocalAuthorityCode>
+      <LocalAuthorityName>Aberdeen City</LocalAuthorityName>
+      <LocalAuthorityWebSite>http://www.aberdeencity.gov.uk</LocalAuthorityWebSite>
+      <LocalAuthorityEmailAddress>commercial@aberdeencity.gov.uk</LocalAuthorityEmailAddress>
+      <Scores/>
+      <SchemeType>FHIS</SchemeType>
+      <NewRatingPending>False</NewRatingPending>
+      <Geocode>
+        <Longitude>-2.13817501068115</Longitude>
+        <Latitude>57.17238235473630</Latitude>
+      </Geocode>
+    </EstablishmentDetail>
+    <EstablishmentDetail>
+      <FHRSID>1178475</FHRSID>
+      <LocalAuthorityBusinessID>EHDC13214</LocalAuthorityBusinessID>
+      <BusinessName>ABERDEEN STEAK BURGER BAR</BusinessName>
+      <BusinessType>Mobile caterer</BusinessType>
+      <BusinessTypeID>7846</BusinessTypeID>
+      <AddressLine1>STT/3/241</AddressLine1>
+      <AddressLine2>Moss Road</AddressLine2>
+      <AddressLine3>Aberdeen</AddressLine3>
+      <RatingValue>Pass</RatingValue>
+      <RatingKey>fhis_pass_en-GB</RatingKey>
+      <RatingDate>2020-02-27</RatingDate>
+      <LocalAuthorityCode>760</LocalAuthorityCode>
+      <LocalAuthorityName>Aberdeen City</LocalAuthorityName>
+      <LocalAuthorityWebSite>http://www.aberdeencity.gov.uk</LocalAuthorityWebSite>
+      <LocalAuthorityEmailAddress>commercial@aberdeencity.gov.uk</LocalAuthorityEmailAddress>
+      <Scores/>
+      <SchemeType>FHIS</SchemeType>
+      <NewRatingPending>False</NewRatingPending>
+      <Geocode/>
+    </EstablishmentDetail>
+  </EstablishmentCollection>
+</FHRSEstablishment>

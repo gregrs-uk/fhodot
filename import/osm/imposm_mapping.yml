@@ -1,0 +1,67 @@
+areas:
+  area_tags: [building, landuse, leisure, natural, aeroway]
+  linear_tags: [highway, barrier]
+
+# nodes positive, ways negative, relations negative -1e17
+# see https://github.com/omniscale/imposm3/search?q=use_single_id_space
+use_single_id_space: true
+
+tables:
+  osm:
+    type: geometry
+
+    # see example https://github.com/omniscale/imposm3/blob/master/test/single_table_mapping.json
+    type_mappings:
+
+      # same as polygons below
+      points:
+        amenity: [bar, cafe, care_home, childcare, church_hall, cinema,
+          college, community_centre, community_hall, fast_food, fuel, hospital,
+          ice_cream, kindergarten, nightclub, nursing_home, pharmacy,
+          place_of_worship, post_office, pub, restaurant, school, social_club,
+          social_facility, theatre, village_hall]
+        club: [scouts, social, sport]
+        craft: [brewery, caterer, confectionery   , distillery, winery]
+        shop: [alcohol, bakery, butcher, cheese, chemist, confectionery,
+          convenience, deli, delicatessen, discount, farm, fishmonger,
+          greengrocer, grocery, health_food, newsagent, pastry, seafood,
+          supermarket, variety_store]
+        tourism: [hotel, guest_house]
+        "fhrs:id": [__any__]
+
+      # same as points above
+      polygons:
+        amenity: [bar, cafe, care_home, childcare, church_hall, cinema,
+          college, community_centre, community_hall, fast_food, fuel, hospital,
+          ice_cream, kindergarten, nightclub, nursing_home, pharmacy,
+          place_of_worship, post_office, pub, restaurant, school, social_club,
+          social_facility, theatre, village_hall]
+        club: [scouts, social, sport]
+        craft: [brewery, caterer, confectionery   , distillery, winery]
+        shop: [alcohol, bakery, butcher, cheese, chemist, confectionery,
+          convenience, deli, delicatessen, discount, farm, fishmonger,
+          greengrocer, grocery, health_food, newsagent, pastry, seafood,
+          supermarket, variety_store]
+        tourism: [hotel, guest_house]
+        "fhrs:id": [__any__]
+
+    # columns should also be defined in the SQLAlchemy database models
+    columns:
+      # id renamed to osm_id by SQL script later
+      # naming it osm_id here causes another id column to be generated
+    - name: id
+      type: id
+    - name: geometry
+      type: geometry
+    - key: "fhrs:id"
+      name: fhrs_ids_string
+      type: string
+    - key: name
+      name: name
+      type: string
+    - key: "addr:postcode"
+      name: addr_postcode
+      type: string
+    - key: "not:addr:postcode"
+      name: not_addr_postcode
+      type: string

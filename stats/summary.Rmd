@@ -1,0 +1,169 @@
+---
+title: "Food Hygiene data in OpenStreetMap"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+library(colorspace)
+library(lubridate)
+library(scales)
+library(targets)
+library(tidyverse)
+
+source("R/functions.R")
+
+fhrs_summary_by_date <- tar_read(stats_by_district) %>%
+  select(-stats_osm) %>%
+  unnest(stats_fhrs) %>%
+  group_by(date, old, statistic) %>%
+  summarise(value = sum(value), .groups = "drop")
+
+new_data_start <- fhrs_summary_by_date %>% filter(!old) %>% pull(date) %>% min()
+latest_date <- fhrs_summary_by_date %>% pull(date) %>% max()
+
+latest_total_establishments <- fhrs_summary_by_date %>%
+  filter(date == max(date)) %>%
+  summarise(value = sum(value)) %>%
+  pull(value)
+
+latest_matched_establishments <- fhrs_summary_by_date %>%
+  filter(
+    date == max(date),
+    statistic == "matched_same_postcodes"
+  ) %>%
+  pull(value)
+
+latest_fhrs_matched_percentage <- round(
+  (latest_matched_establishments / latest_total_establishments) * 100,
+  digits = 1
+)
+
+latest_fhrs_stats_by_district <- tar_read(stats_by_district) %>%
+  select(-stats_osm) %>%
+  unnest(stats_fhrs) %>%
+  filter(date == max(date))
+  # left_join(tar_read(ons_districts), by = c("district_code" = "code"))
+
+latest_osm_stats_by_district <- tar_read(stats_by_district) %>%
+  select(-stats_fhrs) %>%
+  unnest(stats_osm) %>%
+  filter(date == max(date))
+
+theme_update(
+  plot.background = element_rect(colour = "black"),
+  plot.margin = unit(rep(0.75, 4), "lines")
+)
+```
+
+# Matching progress
+
+The graph below shows the progress made in matching Food Hygiene Rating Scheme establishments to OpenStreetMap objects using the `fhrs:id` and `addr:postcode` or `not:addr:postcode` tags. Matching objects are considered to have the same postcodes when the FHRS postcode matches either the OpenStreetMap object's `addr:postcode` or its `not:addr:postcode`.
+
+```{r}
+fhrs_statistic_defs <- get_fhrs_statistic_defs()
+
+fhrs_summary_by_date %>%
+  left_join(fhrs_statistic_defs, by = "statistic") %>%
+  ggplot(aes(date, value, fill = label)) +
+  geom_area() +
+  scale_x_date(
+    date_breaks = "1 year",
+    date_minor_breaks = "1 month",
+    labels = year
+  ) +
+  scale_y_continuous(labels = label_comma()) +
+  scale_fill_manual(
+    values = fhrs_statistic_defs %>% select(label, colour) %>% deframe()
+  ) +
+  guides(fill = guide_legend(reverse = TRUE, nrow = 2)) +
+  labs(
+    title = "Matching FHRS establishments with OpenStreetMap objects",
+    x = "Date",
+    y = "Number of FHRS establishments",
+    fill = NULL,
+    caption = paste(
+      "Establishments in Northern Ireland and unmatched establishments with no",
+      "location not included prior to", strftime(new_data_start, '%e %b %Y')
+    )
+  ) +
+  theme(legend.position = "bottom")
+```
+
+**`r latest_fhrs_matched_percentage`%** of FHRS establishments (`r label_comma()(latest_matched_establishments)` out of `r label_comma()(latest_total_establishments)`) have been successfully matched to OpenStreetMap objects as of `r strftime(latest_date, '%A %e %B %Y')`.
+
+```{r}
+matched_prop_by_district <- latest_fhrs_stats_by_district %>%
+  # ignore unmatched FHRS establishments without a location
+  filter(statistic != "unmatched_without_location") %>%
+  group_by(district_code) %>%
+  mutate(total_establishments = sum(value)) %>%
+  ungroup() %>%
+  filter(statistic == "matched_same_postcodes") %>%
+  mutate(prop_matched_same_postcodes = value / total_establishments)
+
+matched_prop_by_district %>%
+  ggplot(aes(prop_matched_same_postcodes)) +
+  geom_jitter(aes(y = 0.5), height = 0.5) +
+  geom_boxplot(aes(y = -1), coef = 999, outlier.shape = NA) +
+  scale_x_continuous(labels = percent_format(), breaks = seq(0, 1, 0.2)) +
+  scale_y_continuous(limits = c(-2, 1.5)) +
+  labs(
+    title = "Percentage of FHRS establishments matched in each district",
+    subtitle = "Each dot represents one local authority district",
+    x = "Percentage of FHRS establishments matched with same postcodes",
+    y = NULL,
+    caption = "Ignoring unmatched FHRS establishments without a location"
+  ) +
+  theme(
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank()
+  )
+```
+
+The median percentage of FHRS establishments matched in a district is `r median(matched_prop_by_district$prop_matched_same_postcodes) %>% percent_format()()`. A quarter of districts have `r quantile(matched_prop_by_district$prop_matched_same_postcodes, 0.25) %>% percent_format()()` or less of their FHRS establishments matched but `r matched_prop_by_district %>% filter(prop_matched_same_postcodes >= 0.9) %>% nrow()` out of `r nrow(matched_prop_by_district)` districts have at least 90% of their FHRS establishments matched. (These statistics ignore unmatched FHRS establishments without a location and only consider matches where the FHRS establishment's postcode is the same as the OpenStreetMap object's `addr:postcode` or `not:addr:postcode`.)
+
+# Matching issues
+
+```{r}
+fhrs_id_mismatches_by_district <- latest_osm_stats_by_district %>%
+  filter(statistic == "mismatched") %>%
+  slice_max(value, n = 20, with_ties = FALSE) %>%
+  left_join(tar_read(ons_districts), by = c("district_code" = "code")) %>%
+  mutate(name_ons = fct_reorder(name_ons, value))
+
+fhrs_id_mismatches_by_district %>%
+  ggplot(aes(value, name_ons)) +
+  geom_col(fill = "#F15854") +
+  labs(
+    title = "OpenStreetMap objects with incorrect fhrs:id tags",
+    subtitle = "by local authority district",
+    x = "Number of OpenStreetMap objects",
+    y = NULL
+  )
+```
+
+`r fhrs_id_mismatches_by_district %>% slice_max(value, with_ties = FALSE) %>% pull(name_ons)` has `r fhrs_id_mismatches_by_district %>% slice_max(value, with_ties = FALSE) %>% pull(value)` OpenStreetMap objects with incorrect `fhrs:id` tags as of `r strftime(latest_date, '%A %e %B %Y')`.
+
+```{r}
+fhrs_matches_different_postcodes_by_district <- latest_osm_stats_by_district %>%
+  filter(statistic == "matched_different_postcodes") %>%
+  slice_max(value, n = 20, with_ties = FALSE) %>%
+  left_join(tar_read(ons_districts), by = c("district_code" = "code")) %>%
+  mutate(name_ons = fct_reorder(name_ons, value))
+
+fhrs_matches_different_postcodes_by_district %>%
+  ggplot(aes(value, name_ons)) +
+  geom_col(fill = "#F15854") +
+  labs(
+    title = "Matched objects with different postcodes",
+    subtitle = "by local authority district",
+    x = "Number of OpenStreetMap objects",
+    y = NULL
+  )
+```
+
+`r fhrs_matches_different_postcodes_by_district %>% slice_max(value, with_ties = FALSE) %>% pull(name_ons)` has `r fhrs_matches_different_postcodes_by_district %>% slice_max(value, with_ties = FALSE) %>% pull(value)` matched OpenStreetMap objects with a different postcode from their corresponding FHRS establishment as of `r strftime(latest_date, '%A %e %B %Y')`. Postcode errors in the FHRS data can be noted using the `not:addr:postcode` tag on the relevant OpenStreetMap object.

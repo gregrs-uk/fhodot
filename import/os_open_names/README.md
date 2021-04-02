@@ -1,0 +1,1 @@
+Place the contents of the Ordnance Survey Open Names CSV [download](https://osdatahub.os.uk/downloads/open/OpenNames) in this directory. The data can be imported using `scripts/import_os_open_names.py`.
