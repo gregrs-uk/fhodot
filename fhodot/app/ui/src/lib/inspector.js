@@ -11,11 +11,7 @@ import {
   highlightBadClass,
 } from "./inspector_helpers";
 
-import {
-  bindJOSMAction,
-  fetchAbortPrevious,
-  getJOSMAddTagsURL,
-} from "./utils";
+import { fetchAbortPrevious, getJOSMAddTagsURL } from "./utils";
 
 export default class Inspector {
   constructor(elementID) {
@@ -446,14 +442,13 @@ export default class Inspector {
           this.linkDivFirstPara.innerHTML = `
             <span class="action">Add tags in JOSM</span> to link with:`;
 
-          bindJOSMAction(
-            getJOSMAddTagsURL(fhrsPropertiesWithParsedAddress, osmProperties),
-            this.linkDivFirstPara.querySelector("span"),
-            "p",
-          ).then((element) => {
-            const statusPara = element;
-            statusPara.className = "footnote";
-            this.linkDivFirstPara.after(statusPara);
+          handleJOSMAction({
+            url: getJOSMAddTagsURL(
+              fhrsPropertiesWithParsedAddress, osmProperties,
+            ),
+            actionElement: this.linkDivFirstPara.querySelector("span"),
+            statusElement: createElementWith("p", "", "footnote"),
+            statusAfter: this.linkDivFirstPara,
           });
 
           const unparsedAddressFootnote = getUnparsedAddressFootnote(
