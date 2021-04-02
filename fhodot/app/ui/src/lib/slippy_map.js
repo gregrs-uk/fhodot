@@ -14,7 +14,7 @@ export default class SlippyMap {
     const initialCentre = options.initialCentre || [55.6, -5.2];
     const initialZoom = options.initialZoom || 5;
     this.minZoomWithMarkers = options.minZoomWithMarkers || 14;
-    const maxZoom = options.maxZoom || 18;
+    const maxZoom = options.maxZoom || 19;
     this.leafletMap = leafletMap(elementID, {
       center: initialCentre,
       zoom: initialZoom,
@@ -32,9 +32,10 @@ export default class SlippyMap {
       target='_blank'>OS data</a> &copy; Crown copyright and database right
       </a>.`;
 
-    tileLayer(
-      "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png", { attribution },
-    ).addTo(this.leafletMap);
+    tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution,
+      maxZoom,
+    }).addTo(this.leafletMap);
 
     this.previousZoom = null;
     this.leafletMap.addEventListener("zoomstart", this.onZoomStart.bind(this));
