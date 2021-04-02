@@ -13,6 +13,6 @@ cd $osm_import_dir || exit 1
 $imposm_binary_dir/imposm import -config imposm_config.json \
 	-read $data_file -overwritecache -write || exit 1
 
-psql -d $database_name -f $osm_import_dir/post_import.sql
+psql -d $database_name -q -f $osm_import_dir/post_import.sql
 
 cd $original_dir
