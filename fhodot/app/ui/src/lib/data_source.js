@@ -89,6 +89,7 @@ export default class DataSource {
     this.pointLayer = new MarkerClusterGroup({
       maxClusterRadius: 10,
       iconCreateFunction: createClusterIcon,
+      animate: false, // because of re-spiderfy on click
     });
     // optional line layer e.g. for showing distant matches
     this.lineLayer = arg.lineLayer || null;
@@ -182,9 +183,12 @@ export default class DataSource {
       style: styleMarker,
     });
 
-    markers.on("click", (e) => (
-      this.markerClickFunction(e.layer.feature.properties)
-    ));
+    markers.on("click", (e) => {
+      this.markerClickFunction(e.layer.feature.properties);
+      // re-spiderfy cluster when closed by propagated map click
+      const parentCluster = this.pointLayer.getVisibleParent(e.layer);
+      if (parentCluster) setTimeout(() => parentCluster.spiderfy(), 10);
+    });
 
     // remove existing markers to prevent duplication
     this.pointLayer.clearLayers();
