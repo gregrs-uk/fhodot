@@ -26,8 +26,14 @@ class FHRSAuthorityStatistic(DeclarativeBase, Statistic):
     __table_args__ = (
         PrimaryKeyConstraint("authority_code", "date", "statistic"),)
 
-    authority_code = Column(Integer, ForeignKey("fhrs_authorities.code"))
-    authority = relationship("FHRSAuthority", back_populates="statistics")
+    # not a foreign key so that stats kept if authority disappears
+    authority_code = Column(Integer)
+    authority = relationship(
+        "FHRSAuthority",
+        back_populates="statistics",
+        uselist=False,
+        primaryjoin=("FHRSAuthorityStatistic.authority_code == " +
+                     "foreign(FHRSAuthority.code)"))
 
 
     def __repr__(self):

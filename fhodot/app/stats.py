@@ -30,11 +30,13 @@ def get_fhrs_stats_features(bbox, zoom):
     ).subquery()
 
     stats_long = Session.query(FHRSAuthorityStatistic).\
+        select_from(FHRSAuthorityStatistic).\
         filter(
             FHRSAuthorityStatistic.date == subquery.c.latest,
             ST_Intersects(LocalAuthorityDistrict.boundary, get_envelope(bbox))
         ).\
-        join(FHRSAuthority).\
+        join(FHRSAuthority,
+             FHRSAuthority.code == FHRSAuthorityStatistic.authority_code).\
         join(LocalAuthorityDistrict).\
         all()
 

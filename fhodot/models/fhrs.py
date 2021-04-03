@@ -221,8 +221,12 @@ class FHRSAuthority(DeclarativeBase):
                                   cascade="all, delete-orphan")
     district = relationship("LocalAuthorityDistrict",
                             back_populates="fhrs_authority")
-    statistics = relationship("FHRSAuthorityStatistic",
-                              back_populates="authority")
+    statistics = relationship(
+        "FHRSAuthorityStatistic",
+        back_populates="authority",
+        uselist=True,
+        primaryjoin=("foreign(FHRSAuthority.code) == " +
+                     "FHRSAuthorityStatistic.authority_code"))
 
 
     def __repr__(self):
