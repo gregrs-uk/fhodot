@@ -1,3 +1,4 @@
+#!/bin/bash
 cd /home/gregrs/fhodot || exit 1
 source venv/bin/activate || exit 1
 wget --directory-prefix import/osm --no-verbose http://download.geofabrik.de/europe/britain-and-ireland-latest.osm.pbf && \
