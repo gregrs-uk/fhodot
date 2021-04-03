@@ -11,8 +11,8 @@ from re import fullmatch, sub
 
 from geoalchemy2 import Geography, Geometry
 from geoalchemy2.functions import ST_X, ST_Y
-from sqlalchemy import (cast, Column, DateTime, ForeignKey, Integer, String,
-                        Text)
+from sqlalchemy import (cast, Column, Date, DateTime, ForeignKey, Integer,
+                        String, Text)
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import column_property, joinedload, relationship, validates
 
@@ -51,6 +51,7 @@ class FHRSEstablishment(DeclarativeBase):
     address_4 = Column(Text())
     postcode = Column(String(8)) # length ensured by validator regex
     postcode_original = Column(Text) # unvalidated
+    rating_date = Column(Date)
     authority_code = Column(
         Integer, ForeignKey("fhrs_authorities.code"), nullable=False)
 

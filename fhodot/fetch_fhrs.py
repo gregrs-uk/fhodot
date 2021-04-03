@@ -268,6 +268,7 @@ def parse_xml_establishments(xml_string):
                    "address_3": "AddressLine3",
                    "address_2": "AddressLine2",
                    "address_1": "AddressLine1",
+                   "rating_date": "RatingDate",
                    "authority_code": "LocalAuthorityCode"}
         for db_field, xml_field in mapping.items():
             setattr(establishment, db_field,
