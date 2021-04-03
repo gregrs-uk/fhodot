@@ -1,7 +1,8 @@
 #!/bin/bash
 cd /home/gregrs/fhodot || exit 1
 source venv/bin/activate || exit 1
-wget --directory-prefix import/osm --no-verbose http://download.geofabrik.de/europe/britain-and-ireland-latest.osm.pbf && \
+# overwrites previous file
+wget --no-verbose http://download.geofabrik.de/europe/britain-and-ireland-latest.osm.pbf -O import/osm/britain-and-ireland-latest.osm.pbf && \
 	scripts/import_osm.sh
 python -m scripts.update_fhrs
 python -m scripts.calculate_statistics
