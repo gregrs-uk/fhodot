@@ -10,7 +10,7 @@ from fhodot.database import Session
 from fhodot.models.district import LocalAuthorityDistrict
 from fhodot.models.fhrs import FHRSAuthority
 from fhodot.models.stats import (FHRSAuthorityStatistic,
-                                   OSMLocalAuthorityDistrictStatistic)
+                                 OSMLocalAuthorityDistrictStatistic)
 
 
 FHRS_STATUSES = ["matched_same_postcodes", "matched_different_postcodes",

@@ -1,7 +1,7 @@
 """SQLAlchemy database model for statistics"""
 
-from sqlalchemy import (Column, Date, ForeignKey, Integer,
-                        PrimaryKeyConstraint, String, Text)
+from sqlalchemy import (Column, Date, Integer, PrimaryKeyConstraint, String,
+                        Text)
 from sqlalchemy.orm import relationship
 
 from fhodot.models.base import DeclarativeBase
