@@ -182,12 +182,18 @@ footer {
 }
 
 /* INSPECTOR: text */
-#inspector > div p.highlight-bad {
-  background-color: rgba(255, 225, 234, 1);
-  border: 1px solid rgb(255, 0, 0);
+#inspector > div p.highlight-bad, #inspector > div p.highlight-warning {
   border-radius: 5px;
   margin: 0.4em -0.3em;
   padding: 0.1em 0.3em;
+}
+#inspector > div p.highlight-bad {
+  border: 1px solid rgb(255, 0, 0);
+  background-color: rgba(255, 225, 234, 1);
+}
+#inspector > div p.highlight-warning {
+  border: 1px solid rgb(180, 180, 180);
+  background-color: rgb(255, 255, 200);
 }
 #inspector > div p.footnote code {
   background-color: transparent;

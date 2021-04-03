@@ -43,7 +43,8 @@ def get_fhrs_mappings(osm_object, include_distance=False,
             result["fhrsEstablishment"] = {
                 "name": establishment.name,
                 "postcode": establishment.postcode,
-                "postcodeOriginal": establishment.postcode_original}
+                "postcodeOriginal": establishment.postcode_original,
+                "ratingDate": str(establishment.rating_date)}
             if include_location:
                 result["fhrsEstablishment"]["lat"] = (
                     establishment.lat)

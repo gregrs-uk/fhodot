@@ -12,6 +12,7 @@ def get_selected_fhrs_properties(fhrs_establishment):
             "fhrsID": fhrs_establishment.fhrs_id,
             "postcode": fhrs_establishment.postcode,
             "postcodeOriginal": fhrs_establishment.postcode_original,
+            "ratingDate": str(fhrs_establishment.rating_date),
             "numMatchesSamePostcodes":
                 fhrs_establishment.num_matches_same_postcodes,
             "numMatchesDifferentPostcodes":

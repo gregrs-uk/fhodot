@@ -14,8 +14,9 @@ import {
 // minimum distance at which to display warning
 export const distanceThreshold = 240;
 
-// CSS class for highlighting bad postcodes
+// CSS classes for highlighting
 export const highlightBadClass = "highlight-bad";
+const highlightWarningClass = "highlight-warning";
 
 /**
  * Returns HTMLElement with inner HTML and optional class
@@ -59,6 +60,27 @@ const getFHRSPostcodeFootnote = (properties) => {
 };
 
 /**
+ * Returns formatted rating date and CSS class for rating date
+ */
+const formatRatingDate = (ratingDateString, warningYears) => {
+  if (ratingDateString === "None") {
+    return { ratingDateFormatted: "None", ratingDateClass: "" };
+  }
+
+  const ratingDate = new Date(ratingDateString);
+  const ratingDateFormatted = ratingDate.toLocaleDateString("en-GB", {
+    day: "numeric", month: "short", year: "numeric",
+  });
+  const today = new Date();
+  const warningDate = today.setFullYear(today.getFullYear() - warningYears);
+
+  return {
+    ratingDateFormatted,
+    ratingDateClass: ratingDate < warningDate ? highlightWarningClass : "",
+  };
+};
+
+/**
  * Returns HTMLElement for <div> with FHRS establishment details
  */
 export const getFHRSEstablishmentDiv = (properties, options) => {
@@ -66,8 +88,11 @@ export const getFHRSEstablishmentDiv = (properties, options) => {
     heading, cssClass, showRememberPara, showClearPara,
   } = options;
   const {
-    name, fhrsID, postcode, distance,
+    name, distance, fhrsID, postcode,
   } = properties;
+  const {
+    ratingDateFormatted, ratingDateClass,
+  } = formatRatingDate(properties.ratingDate, 5);
 
   const html = `
     <h3>${heading}</h3>
@@ -78,6 +103,8 @@ export const getFHRSEstablishmentDiv = (properties, options) => {
       <span class="field">Postcode:</span>
       ${getValueOrPlaceholder(postcode)}</p>
     ${getFHRSPostcodeFootnote(properties)}
+    <p class="${ratingDateClass}"><span class="field">Rating date:</span>
+      ${ratingDateFormatted}</p>
     ${distance && distance > distanceThreshold ? `
       <p class=${highlightBadClass}>
         <span class="field">Distance from OSM object</span>:
