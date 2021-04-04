@@ -65,7 +65,8 @@ export default class SlippyMap {
     this.layerControl = control.layers().addTo(this.leafletMap);
     dataCollection.dataSources.forEach((dataSource) => {
       this.layerControl.addBaseLayer(
-        dataSource.layerGroup, dataSource.label,
+        dataSource.layerGroup,
+        `${dataSource.label} <kbd>${dataSource.keyboardShortcut}</kbd>`,
       );
     });
   }

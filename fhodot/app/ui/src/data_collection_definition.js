@@ -20,6 +20,7 @@ const getDataCollection = (inspector) => new DataCollection([
     statsJSONURL: `api/stats_fhrs`,
     markerClickFunction: (data) => inspector.updateFHRS(data),
     tables: [fhrsPostcodeDifferencesTable],
+    keyboardShortcut: "f",
   }),
   new DataSource({
     name: "osm",
@@ -29,6 +30,7 @@ const getDataCollection = (inspector) => new DataCollection([
     statsJSONURL: `api/stats_osm`,
     markerClickFunction: (data) => inspector.updateOSM(data, false),
     tables: [mismatchesTable, osmPostcodeDifferencesTable],
+    keyboardShortcut: "o",
   }),
   new DataSource({
     name: "suggest",
@@ -37,6 +39,7 @@ const getDataCollection = (inspector) => new DataCollection([
     jsonURL: `api/suggest`,
     markerClickFunction: (data) => inspector.updateOSM(data, true),
     tables: [],
+    keyboardShortcut: "s",
   }),
   new DataSource({
     name: "distant",
@@ -46,6 +49,7 @@ const getDataCollection = (inspector) => new DataCollection([
     jsonURL: `api/distant`,
     markerClickFunction: (data) => inspector.updateOSM(data, false),
     tables: [osmPostcodeDifferencesTable],
+    keyboardShortcut: "d",
   }),
 ]);
 

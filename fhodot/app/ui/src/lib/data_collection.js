@@ -32,4 +32,14 @@ export default class DataCollection {
     );
     return result || null;
   }
+
+  /**
+   * Get DataSource matching the given keyboard shortcut, or null
+   */
+  getDataSourceByKeyboardShortcut(key) {
+    const result = this.dataSources.find(
+      (dataSource) => dataSource.keyboardShortcut === key,
+    );
+    return result || null;
+  }
 }

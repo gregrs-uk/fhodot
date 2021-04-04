@@ -98,6 +98,7 @@ export default class DataSource {
     this.statsJSONURL = arg.statsJSONURL;
     this.markerClickFunction = arg.markerClickFunction;
     this.tables = arg.tables;
+    this.keyboardShortcut = arg.keyboardShortcut;
 
     // layerGroup with all data source's layers, for adding to layer control
     const layers = [this.pointLayer];

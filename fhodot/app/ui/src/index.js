@@ -130,3 +130,14 @@ document.addEventListener("autoChooseLayer", () => {
   // this will also cause SlippyMap to fire mapLayerChange event on document
   dataCollection.getDataSourceByName(newDataSource).addLayerGroupTo(map);
 });
+
+// switching layer by keyboard shortcut
+document.addEventListener("keyup", (e) => {
+  const newDataSource = dataCollection.getDataSourceByKeyboardShortcut(e.key);
+  if (!newDataSource) return;
+  const currentDataSource = dataCollection.getCurrentDataSource(map);
+  if (newDataSource !== currentDataSource) {
+    currentDataSource.removeLayerGroupFrom(map);
+    newDataSource.addLayerGroupTo(map);
+  }
+});
