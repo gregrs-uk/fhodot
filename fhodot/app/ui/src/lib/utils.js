@@ -33,8 +33,14 @@ export const getIDEditURL = (osmType, osmIDByType) => (
  * Return JOSM remote control URL to add OSM tags for FHRS establishment
  */
 export const getJOSMAddTagsURL = (fhrsProperties, osmProperties) => {
+  // use OSM object's existing good FHRS IDs and FHRS establishment's ID
+  const fhrsIDs = osmProperties.fhrsMappings
+    .map((mapping) => (mapping.fhrsEstablishment ? mapping.fhrsID : null))
+    .filter((fhrsID) => fhrsID !== null)
+    .concat(fhrsProperties.fhrsID);
+
   const tags = {
-    "fhrs:id": fhrsProperties.fhrsID,
+    "fhrs:id": fhrsIDs.join(";"),
     name: fhrsProperties.name,
     "addr:postcode": fhrsProperties.postcode,
     "source:addr": "FHRS Open Data",
