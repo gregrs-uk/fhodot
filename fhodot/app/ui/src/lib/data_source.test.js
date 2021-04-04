@@ -2,7 +2,7 @@
 
 import { expect, use } from "chai";
 import {
-  circleMarker, FeatureGroup, geoJSON, LayerGroup,
+  circleMarker, CircleMarker, FeatureGroup, geoJSON, GeoJSON, LayerGroup,
 } from "leaflet";
 import { MarkerClusterGroup } from "leaflet.markercluster";
 import {
@@ -160,14 +160,10 @@ describe("DataSource", () => {
     let map;
     let dataSource;
     let markers;
-    const oldFeature = {
+    const feature = {
       type: "Feature",
       geometry: { type: "Point", coordinates: [1, 52] },
-    };
-    const newFeature = {
-      type: "Feature",
-      geometry: { type: "Point", coordinates: [0, 51] },
-      properties: true,
+      properties: {},
     };
 
     beforeEach(() => {
@@ -175,25 +171,25 @@ describe("DataSource", () => {
       document.querySelector("body").append(mapDiv);
       map = new SlippyMap("map");
 
-      // add GeoJSON layer to map
       dataSource = new DataSource({
         type: "osm",
         markerClickFunction: spy(),
       });
-      dataSource.pointLayer = geoJSON({
-        type: "FeatureCollection",
-        features: [oldFeature, oldFeature, oldFeature], // 3 features
-      });
-      dataSource.addLayerGroupTo(map);
-      expect(dataSource.isEnabled(map)).to.equal(true);
-      expect(dataSource.pointLayer.getLayers()).to.be.an("array").of.length(3);
-
       dataSource.replaceMarkersLines({
         type: "FeatureCollection",
-        features: [newFeature, newFeature], // 2 features
+        features: [feature, feature, feature], // 3 features
       });
-      // N.B. layers are more deeply nested after addLayer has been called
-      markers = dataSource.pointLayer.getLayers()[0].getLayers();
+      dataSource.addLayerGroupTo(map);
+
+      // Oddly, pointLayer.getLayers() returns array of CircleMarkers in
+      // tests.html but returns array containing parent GeoJSON layer
+      // when tests are run using Karma
+      const layers = dataSource.pointLayer.getLayers();
+      if (layers[0] instanceof GeoJSON) {
+        markers = layers[0].getLayers(); // Karma
+      } else {
+        markers = layers; // tests.html
+      }
     });
 
     afterEach(() => {
@@ -201,13 +197,22 @@ describe("DataSource", () => {
       mapDiv.remove();
     });
 
-    it("clears existing markers to avoid duplication", () => {
-      expect(markers).to.be.an("array").of.length(2); // not more
+    it("adds CircleMarkers to pointLayer", () => {
+      expect(markers).to.be.an("array").of.length(3);
+      expect(markers[0]).to.be.an.instanceof(CircleMarker);
     });
 
-    it("adds markers with correct geometry", () => {
-      expect(markers[0].feature.geometry).to.equal(newFeature.geometry);
-      expect(markers[1].feature.geometry).to.equal(newFeature.geometry);
+    it("clears existing markers to avoid duplication", () => {
+      dataSource.replaceMarkersLines({
+        type: "FeatureCollection",
+        features: [feature, feature], // 2 features
+      });
+      const layers = dataSource.pointLayer.getLayers();
+      if (layers[0] instanceof GeoJSON) {
+        expect(layers[0].getLayers()).to.be.an("array").of.length(2); // Karma
+      } else {
+        expect(layers).to.be.an("array").of.length(2); // tests.html
+      }
     });
 
     it("binds on click function to markers", () => {
