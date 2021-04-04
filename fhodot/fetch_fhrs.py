@@ -23,7 +23,7 @@ def retry_if_request_exception(exception):
        wait_exponential_max=60000, # wait max 1'00" between attempts
        stop_max_delay=181000, # wait up to a maximum of 3'01"
        retry_on_exception=retry_if_request_exception) # don't retry on others
-def download_with_retries(url, headers=None): # pragma: no cover
+def download_with_retries(url, headers=None, encoding=None): # pragma: no cover
     """Download data from the internet
 
     If first attempt fails, wait and try again. The wait time increases
@@ -31,6 +31,7 @@ def download_with_retries(url, headers=None): # pragma: no cover
 
     url (string): the URL to download
     headers (dict): headers to add in addition to the user agent
+    encoding (string): set to override the response encoding
 
     Return the data downloaded
     """
@@ -52,6 +53,9 @@ def download_with_retries(url, headers=None): # pragma: no cover
             f"Headers: {headers}\n" +
             f"Status code: {response.status_code}")
         raise # caught by @retry unless final attempt fails
+
+    if encoding:
+        response.encoding = encoding
 
     return response.text
 
@@ -234,8 +238,8 @@ def merge_authorities_with_session(authorities):
 def download_establishments_xml_file(authority): # pragma: no cover
     """Download the establishments XML file for an authority"""
 
-    return download_with_retries(authority.xml_url,
-                                 {"accept": "text/xml"})
+    return download_with_retries(
+        authority.xml_url, {"accept": "text/xml"}, "UTF-8")
 
 
 def parse_xml_establishments(xml_string):
