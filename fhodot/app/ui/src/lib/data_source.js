@@ -178,7 +178,9 @@ export default class DataSource {
 
     // new set of markers from the GeoJSON data
     const markers = geoJson(pointsData, {
-      pointToLayer: (feature, latlng) => circleMarker(latlng, {}),
+      pointToLayer: (feature, latlng) => circleMarker(latlng, {
+        bubblingMouseEvents: false, // prevent unspiderfy on marker click
+      }),
       style: styleMarker,
     });
 
