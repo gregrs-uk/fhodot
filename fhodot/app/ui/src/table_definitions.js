@@ -24,7 +24,7 @@ const getLink = (text, url) => `<a href="${url}" target="_blank">${text}</a>`;
 /**
  * Return a <td> containing JOSM/iD edit actions
  */
-const getEditCell = (osmType, osmIDByType) => {
+const getEditActionsCell = (osmType, osmIDByType) => {
   const josmLoadURL = getJOSMLoadURL(osmType, osmIDByType);
   const idEditURL = getIDEditURL(osmType, osmIDByType);
 
@@ -34,6 +34,27 @@ const getEditCell = (osmType, osmIDByType) => {
   cell.querySelector("span.action")
     .addEventListener("click", () => openJOSMURL(josmLoadURL));
 
+  return cell;
+};
+
+/**
+ * Return a <td> containing map select/zoom actions
+ */
+const getMapActionsCell = (feature) => {
+  const selectSpan = createElementWith("span", "Select", "action");
+  selectSpan.addEventListener("click", () => {
+    const event = new CustomEvent("requestSelect", { detail: feature });
+    document.dispatchEvent(event);
+  });
+
+  const zoomSpan = createElementWith("span", "Select & zoom", "action");
+  zoomSpan.addEventListener("click", () => {
+    const event = new CustomEvent("requestSelectAndZoom", { detail: feature });
+    document.dispatchEvent(event);
+  });
+
+  const cell = document.createElement("td");
+  cell.append(selectSpan, " / ", zoomSpan);
   return cell;
 };
 
@@ -53,7 +74,8 @@ const getMismatchRow = (feature) => {
       // true if FHRS ID doesn't match an establishment
       (fhrsMapping) => !("fhrsEstablishment" in fhrsMapping),
     ).map((fhrsMapping) => fhrsMapping.fhrsID).join(", "),
-    edit: getEditCell(osmType, osmIDByType),
+    editActions: getEditActionsCell(osmType, osmIDByType),
+    mapActions: getMapActionsCell(feature),
   };
 };
 
@@ -72,7 +94,8 @@ export const mismatchesTable = new Table({
   definition: new Map([
     ["OSM <code>name</code>", "name"],
     ["Incorrect FHRS ID(s)", "fhrsIDs"],
-    ["Edit", "edit"],
+    ["Edit", "editActions"],
+    ["On map above", "mapActions"],
   ]),
   getProperties: (data) => {
     const results = [];
@@ -106,7 +129,8 @@ const getPostcodeDifferencesRowOSM = (feature, fhrsMapping) => {
     ),
     osmPostcode: getValueOrPlaceholder(osmPostcode),
     fhrsPostcode: getValueOrPlaceholder(fhrsPostcode),
-    edit: getEditCell(osmType, osmIDByType),
+    editActions: getEditActionsCell(osmType, osmIDByType),
+    mapActions: getMapActionsCell(feature),
   };
 };
 
@@ -131,7 +155,8 @@ export const osmPostcodeDifferencesTable = new Table({
     ["OSM <code>addr:postcode</code>", "osmPostcode"],
     ["FHRS establishment name", "fhrsName"],
     ["FHRS postcode", "fhrsPostcode"],
-    ["Edit", "edit"],
+    ["Edit", "editActions"],
+    ["On map above", "mapActions"],
   ]),
   getProperties: (data) => {
     const results = [];
@@ -166,7 +191,8 @@ const getPostcodeDifferencesRowFHRS = (feature, osmMapping) => {
     ),
     fhrsPostcode: getValueOrPlaceholder(fhrsPostcode),
     osmPostcode: getValueOrPlaceholder(osmPostcode),
-    edit: getEditCell(osmType, osmIDByType),
+    editActions: getEditActionsCell(osmType, osmIDByType),
+    mapActions: getMapActionsCell(feature),
   };
 };
 
@@ -191,7 +217,8 @@ export const fhrsPostcodeDifferencesTable = new Table({
     ["FHRS postcode", "fhrsPostcode"],
     ["OSM <code>name</code>", "osmName"],
     ["OSM <code>addr:postcode</code>", "osmPostcode"],
-    ["Edit", "edit"],
+    ["Edit", "editActions"],
+    ["On map above", "mapActions"],
   ]),
   getProperties: (data) => {
     const results = [];

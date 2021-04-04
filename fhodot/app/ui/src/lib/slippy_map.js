@@ -14,11 +14,11 @@ export default class SlippyMap {
     const initialCentre = options.initialCentre || [55.6, -5.2];
     const initialZoom = options.initialZoom || 5;
     this.minZoomWithMarkers = options.minZoomWithMarkers || 14;
-    const maxZoom = options.maxZoom || 19;
+    this.maxZoom = options.maxZoom || 19;
     this.leafletMap = leafletMap(elementID, {
       center: initialCentre,
       zoom: initialZoom,
-      maxZoom,
+      maxZoom: this.maxZoom,
     });
 
     new EditControl().addTo(this.leafletMap);
@@ -34,7 +34,7 @@ export default class SlippyMap {
 
     tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution,
-      maxZoom,
+      maxZoom: this.maxZoom,
     }).addTo(this.leafletMap);
 
     this.previousZoom = null;
@@ -118,5 +118,12 @@ export default class SlippyMap {
         && currentZoom > this.previousZoom) {
       document.dispatchEvent(new Event("mapZoomMarkersVisible"));
     }
+  }
+
+  /**
+   * Centre the map on the specified location and set zoom to maxZoom
+   */
+  zoomTo(lat, lon) {
+    this.leafletMap.setView({ lat, lon }, this.maxZoom);
   }
 }

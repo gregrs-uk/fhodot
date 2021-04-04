@@ -141,3 +141,15 @@ document.addEventListener("keyup", (e) => {
     newDataSource.addLayerGroupTo(map);
   }
 });
+
+// select feature and optionally zoom map
+document.addEventListener("requestSelect", (e) => {
+  dataCollection.getCurrentDataSource(map)
+    .markerClickFunction(e.detail.properties);
+});
+document.addEventListener("requestSelectAndZoom", (e) => {
+  const [lon, lat] = e.detail.geometry.coordinates;
+  map.zoomTo(lat, lon);
+  dataCollection.getCurrentDataSource(map)
+    .markerClickFunction(e.detail.properties);
+});
