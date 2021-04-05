@@ -13,7 +13,9 @@ from fhodot.app.fhrs import get_selected_fhrs_properties, get_osm_mappings
 from fhodot.app.osm import get_selected_osm_properties, get_fhrs_mappings
 from fhodot.app.parse_addresses import parse_establishment_address
 from fhodot.app.stats import get_fhrs_stats_features, get_osm_stats_features
-from fhodot.app.suggest import get_suggested_matches_by_osm
+from fhodot.app.suggest import (get_suggested_matches_by_osm_id,
+                                get_full_osm_objects_query,
+                                get_full_fhrs_establishments_dict)
 from fhodot.app.utils import (
     get_bbox, get_geojson_line, get_geojson_point,
     get_geojson_feature_collection_string, query_within_bbox)
@@ -143,18 +145,24 @@ def data_stats_osm():
 def data_suggest():
     """OSM objects with suggested matches for a bbox in GeoJSON format"""
 
-    matches_by_osm = get_suggested_matches_by_osm(get_bbox(request.args))
+    matches_by_osm_id = get_suggested_matches_by_osm_id(get_bbox(request.args))
+    osm_objects_full = get_full_osm_objects_query(matches_by_osm_id)
+    fhrs_establishments_full_by_id = get_full_fhrs_establishments_dict(
+        matches_by_osm_id)
 
     # create a list of features that will become a GeoJSON feature collection
     features = []
-    for osm_object, suggested_matches in matches_by_osm.items():
+    for osm_object in osm_objects_full:
         properties = get_selected_osm_properties(osm_object)
         properties["fhrsMappings"] = get_fhrs_mappings(osm_object)
         properties["suggestedMatches"] = []
-        for suggested_match in suggested_matches:
-            est_properties = get_selected_fhrs_properties(suggested_match)
+        osm_id = osm_object.osm_id_single_space
+        for suggested_match in matches_by_osm_id[osm_id]:
+            suggested_match_full = fhrs_establishments_full_by_id[
+                suggested_match.fhrs_id]
+            est_properties = get_selected_fhrs_properties(suggested_match_full)
             est_properties["parsedAddress"] = parse_establishment_address(
-                suggested_match)
+                suggested_match_full)
             properties["suggestedMatches"].append(est_properties)
 
         features.append(
