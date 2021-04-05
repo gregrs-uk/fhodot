@@ -151,9 +151,11 @@ export const osmPostcodeDifferencesTable = new Table({
  * Return details of postcode difference for matched FHRS establishment
  */
 const getPostcodeDifferencesRowFHRS = (feature, osmMapping) => {
-  const { fhrsID, fhrsName, postcode: fhrsPostcode } = feature.properties;
   const {
-    osmName, osmType, osmIDByType, postcode: osmPostcode,
+    fhrsID, name: fhrsName, postcode: fhrsPostcode,
+  } = feature.properties;
+  const {
+    name: osmName, osmType, osmIDByType, postcode: osmPostcode,
   } = osmMapping.osmObject;
 
   return {
