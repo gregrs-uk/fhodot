@@ -3,7 +3,6 @@
  */
 
 import {
-  createElementWith,
   getFHRSEstablishmentDiv,
   getOSMObjectDiv,
   getUnparsedAddressFootnote,
@@ -11,7 +10,9 @@ import {
   highlightBadClass,
 } from "./inspector_helpers";
 
-import { fetchAbortPrevious, getJOSMAddTagsURL } from "./utils";
+import {
+  createElementWith, fetchAbortPrevious, getJOSMAddTagsURL,
+} from "./utils";
 
 export default class Inspector {
   constructor(elementID) {

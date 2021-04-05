@@ -5,6 +5,7 @@
 import Table from "./lib/table";
 import TableGroup from "./lib/table_group";
 import {
+  createElementWith,
   getValueOrPlaceholder,
   getFSAURL,
   getOSMURL,
@@ -27,9 +28,9 @@ const getEditCell = (osmType, osmIDByType) => {
   const josmLoadURL = getJOSMLoadURL(osmType, osmIDByType);
   const idEditURL = getIDEditURL(osmType, osmIDByType);
 
-  const cell = document.createElement("td");
-  cell.innerHTML = `
-    <span class="action">JOSM</span> / ${getLink("iD", idEditURL)}`;
+  const cell = createElementWith(
+    "td", `<span class="action">JOSM</span> / ${getLink("iD", idEditURL)}`,
+  );
   cell.querySelector("span.action")
     .addEventListener("click", () => openJOSMURL(josmLoadURL));
 

@@ -4,6 +4,7 @@
 
 import {
   bindJOSMAction,
+  createElementWith,
   getValueOrPlaceholder,
   getFSAURL,
   getIDEditURL,
@@ -17,21 +18,6 @@ export const distanceThreshold = 240;
 // CSS classes for highlighting
 export const highlightBadClass = "highlight-bad";
 const highlightWarningClass = "highlight-warning";
-
-/**
- * Returns HTMLElement with inner HTML and optional class
- */
-export const createElementWith = (tag, content = "", cssClass = null) => {
-  if (!content && !cssClass) {
-    throw Error(
-      "createElementWith only got tag. Use document.createElement instead",
-    );
-  }
-  const element = document.createElement(tag);
-  if (cssClass) element.className = cssClass;
-  element.innerHTML = content;
-  return element;
-};
 
 /**
  * Returns postcode footnote HTML for an FHRS establishment

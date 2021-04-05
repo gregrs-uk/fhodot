@@ -1,4 +1,19 @@
 /**
+ * Returns HTMLElement with inner HTML and optional class
+ */
+export const createElementWith = (tag, content = "", cssClass = null) => {
+  if (!content && !cssClass) {
+    throw Error(
+      "createElementWith only got tag. Use document.createElement instead",
+    );
+  }
+  const element = document.createElement(tag);
+  if (cssClass) element.className = cssClass;
+  element.innerHTML = content;
+  return element;
+};
+
+/**
  * Return string supplied or a placeholder if string is empty
  */
 export const getValueOrPlaceholder = (value) => (
