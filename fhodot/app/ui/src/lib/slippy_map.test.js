@@ -85,8 +85,8 @@ describe("SlippyMap", () => {
       document.querySelector("body").append(mapDiv);
       map = new SlippyMap("map");
       dataCollection = new DataCollection([
-        new DataSource({ label: "One", type: "fhrs" }),
-        new DataSource({ label: "Two", type: "osm" }),
+        new DataSource({ label: "One", type: "fhrs", keyboardShortcut: "1"}),
+        new DataSource({ label: "Two", type: "osm", keyboardShortcut: "2"}),
       ]);
       map.addLayerControl(dataCollection);
     });
@@ -112,8 +112,8 @@ describe("SlippyMap", () => {
 
     it("uses labels correctly", () => {
       expect(map.layerControl._layers.length).to.equal(2);
-      expect(map.layerControl._layers[0].name).to.equal("One");
-      expect(map.layerControl._layers[1].name).to.equal("Two");
+      expect(map.layerControl._layers[0].name).to.equal("One <kbd>1</kbd>");
+      expect(map.layerControl._layers[1].name).to.equal("Two <kbd>2</kbd>");
     });
 
     /* eslint-enable no-underscore-dangle */
