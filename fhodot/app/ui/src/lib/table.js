@@ -69,7 +69,7 @@ export default class Table {
 
     const headerRow = table.createTHead().insertRow();
     this.definition.forEach((field, colHeader) => {
-      headerRow.insertCell().innerHTML = colHeader;
+      headerRow.insertCell().outerHTML = `<th>${colHeader}</th>`;
     });
 
     const tableBody = table.createTBody();

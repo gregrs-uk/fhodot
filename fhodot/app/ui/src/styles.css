@@ -31,6 +31,9 @@ footer > p {
   color: rgb(120, 120, 120);
   font-size: 80%;
 }
+th {
+  font-weight: 500;
+}
 p.footnote {
   font-weight: 300;
   color: rgb(80, 80, 80);
