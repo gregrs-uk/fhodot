@@ -1,6 +1,5 @@
 import { expect } from "chai";
 import { Control, LayerGroup, Map as LeafletMap } from "leaflet";
-import { MarkerClusterGroup } from "leaflet.markercluster";
 import {
   describe, it, beforeEach, afterEach,
 } from "mocha";
@@ -85,8 +84,8 @@ describe("SlippyMap", () => {
       document.querySelector("body").append(mapDiv);
       map = new SlippyMap("map");
       dataCollection = new DataCollection([
-        new DataSource({ label: "One", type: "fhrs", keyboardShortcut: "1"}),
-        new DataSource({ label: "Two", type: "osm", keyboardShortcut: "2"}),
+        new DataSource({ label: "One", type: "fhrs", keyboardShortcut: "1" }),
+        new DataSource({ label: "Two", type: "osm", keyboardShortcut: "2" }),
       ]);
       map.addLayerControl(dataCollection);
     });
