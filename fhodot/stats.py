@@ -7,10 +7,9 @@ from logging import debug, info
 from sqlalchemy.orm import joinedload
 
 from fhodot.database import Session
-from fhodot.models.district import LocalAuthorityDistrict
-from fhodot.models.fhrs import FHRSAuthority
-from fhodot.models.stats import (FHRSAuthorityStatistic,
-                                 OSMLocalAuthorityDistrictStatistic)
+from fhodot.models import (FHRSAuthority, FHRSAuthorityStatistic,
+                           LocalAuthorityDistrict,
+                           OSMLocalAuthorityDistrictStatistic)
 
 
 FHRS_STATUSES = ["matched_same_postcodes", "matched_different_postcodes",

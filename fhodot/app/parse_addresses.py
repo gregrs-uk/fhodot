@@ -26,8 +26,7 @@ from re import search
 from sqlalchemy import or_
 
 from fhodot.database import Session
-from fhodot.models.fhrs import FHRSEstablishment
-from fhodot.models.os_open_names import OSPlace, OSRoad
+from fhodot.models import FHRSEstablishment, OSPlace, OSRoad
 from fhodot.standardise import standardise
 
 

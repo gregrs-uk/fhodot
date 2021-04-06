@@ -11,10 +11,9 @@ from sqlalchemy import cast, func
 
 from fhodot.app.utils import get_envelope
 from fhodot.database import Session
-from fhodot.models.district import LocalAuthorityDistrict
-from fhodot.models.fhrs import FHRSAuthority
-from fhodot.models.stats import (OSMLocalAuthorityDistrictStatistic,
-                                 FHRSAuthorityStatistic)
+from fhodot.models import (FHRSAuthority, FHRSAuthorityStatistic,
+                           LocalAuthorityDistrict,
+                           OSMLocalAuthorityDistrictStatistic)
 
 
 def get_pixel_size_degrees_for_zoom_level(zoom):

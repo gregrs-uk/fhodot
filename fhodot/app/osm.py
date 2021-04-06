@@ -1,6 +1,6 @@
 """Functions relating to OSM endpoint for Flask API"""
 
-from fhodot.models.osm import OSMObject
+from fhodot.models import OSMObject
 
 
 def get_selected_osm_properties(osm_object):

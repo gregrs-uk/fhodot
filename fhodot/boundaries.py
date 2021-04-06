@@ -8,7 +8,7 @@ from shapely.geometry.multipolygon import MultiPolygon
 from shapely.geometry.polygon import Polygon
 
 from fhodot.database import Session
-from fhodot.models.district import LocalAuthorityDistrict
+from fhodot.models import LocalAuthorityDistrict
 
 
 def add_boundaries_to_session(shapefile_path, field_prefix):

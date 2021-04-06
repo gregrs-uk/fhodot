@@ -1,16 +1,18 @@
-"""Setup for SQLAlchemy database models
+"""SQLAlchemy database models
 
-See the fhrs and osm modules for the actual models, which import the
-same DeclarativeBase from fhodot.models.base.
+Models should be imported from this module (fhodot.models), but see its
+submodules for the model definitions, which import the same
+DeclarativeBase from fhodot.models.base.
 """
 
 # The imports below register all model classes so that the mapper can
 # locate class names needed within relationships, even when we only
 # import a single class elsewhere.
 
-import fhodot.models.district
-import fhodot.models.fhrs
-import fhodot.models.mapping
-import fhodot.models.os_open_names
-import fhodot.models.osm
-import fhodot.models.stats
+from fhodot.models.district import LocalAuthorityDistrict
+from fhodot.models.fhrs import FHRSAuthority, FHRSEstablishment
+from fhodot.models.mapping import OSMFHRSMapping
+from fhodot.models.os_open_names import OSOpenNamesObject, OSPlace, OSRoad
+from fhodot.models.osm import OSMObject
+from fhodot.models.stats import (FHRSAuthorityStatistic,
+                                 OSMLocalAuthorityDistrictStatistic)

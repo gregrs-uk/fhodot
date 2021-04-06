@@ -1,6 +1,6 @@
 """Functions relating to FHRS endpoint for Flask API"""
 
-from fhodot.models.fhrs import FHRSEstablishment
+from fhodot.models import FHRSEstablishment
 
 
 def get_selected_fhrs_properties(fhrs_establishment):

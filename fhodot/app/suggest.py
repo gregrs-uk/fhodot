@@ -9,8 +9,7 @@ from sqlalchemy import not_
 from unidecode import unidecode
 
 from fhodot.database import Session
-from fhodot.models.fhrs import FHRSEstablishment
-from fhodot.models.osm import OSMObject
+from fhodot.models import FHRSEstablishment, OSMObject
 from fhodot.app.utils import get_envelope
 
 

@@ -18,9 +18,7 @@ from fhodot.app.utils import (
     get_bbox, get_geojson_line, get_geojson_point,
     get_geojson_feature_collection_string, query_within_bbox)
 from fhodot.database import Session
-from fhodot.models.fhrs import FHRSEstablishment
-from fhodot.models.mapping import OSMFHRSMapping
-from fhodot.models.osm import OSMObject
+from fhodot.models import FHRSEstablishment, OSMFHRSMapping, OSMObject
 
 
 # consistent path to allow redirect to wsgi-bin in production

@@ -10,8 +10,8 @@ from sqlalchemy import desc, func
 
 from fhodot.config import USER_AGENT
 from fhodot.database import Session
-from fhodot.models.district import LocalAuthorityDistrict
-from fhodot.models.fhrs import FHRSAuthority, FHRSEstablishment
+from fhodot.models import (FHRSAuthority, FHRSEstablishment,
+                           LocalAuthorityDistrict)
 
 
 def retry_if_request_exception(exception):

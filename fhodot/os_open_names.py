@@ -3,7 +3,7 @@
 from csv import DictReader
 
 from fhodot.database import Session
-from fhodot.models.os_open_names import OSOpenNamesObject, OSPlace, OSRoad
+from fhodot.models import OSOpenNamesObject, OSPlace, OSRoad
 from fhodot.standardise import standardise
 
 
