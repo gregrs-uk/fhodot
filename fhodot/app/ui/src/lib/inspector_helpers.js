@@ -9,6 +9,7 @@ import {
   getFSAURL,
   getIDEditURL,
   getOSMURL,
+  getJOSMAddTagsURL,
   getJOSMLoadURL,
 } from "./utils";
 
@@ -262,4 +263,42 @@ export const handleParsedAddressLoadError = (
   }
   element.querySelector("span.action")
     .addEventListener("click", fetchAddressFunction);
+};
+
+/**
+ * Fetch parsed address and bind JOSM action for suggested FHRS match
+ */
+export const handleSuggestedMatchAddress = (
+  osmProperties, fhrsProperties, actionElement,
+) => {
+  // define as function so it can be bound to 'try again'
+  const fetchAddress = () => {
+    // not fetchAbortPrevious in case of multiple suggested matches
+    fetch(`api/fhrs/${fhrsProperties.fhrsID}`)
+      .then((response) => response.json())
+      .then((fhrsPropertiesWithParsedAddress) => {
+        /* eslint-disable no-param-reassign */
+        actionElement.innerHTML = "Add tags in JOSM";
+        actionElement.className = "action";
+        handleJOSMAction({
+          url: getJOSMAddTagsURL(
+            fhrsPropertiesWithParsedAddress, osmProperties,
+          ),
+          actionElement,
+          statusElement: createElementWith("p", "", "footnote"),
+          statusAfter: actionElement,
+        });
+        const unparsedAddressFootnote = (
+          getUnparsedAddressFootnote(fhrsPropertiesWithParsedAddress)
+        );
+        if (unparsedAddressFootnote.innerHTML) {
+          actionElement.after(unparsedAddressFootnote);
+        }
+      })
+      .catch((error) => {
+        handleParsedAddressLoadError(error, actionElement, fetchAddress);
+      });
+  };
+
+  fetchAddress();
 };

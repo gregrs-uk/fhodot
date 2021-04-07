@@ -161,8 +161,6 @@ def data_suggest():
             suggested_match_full = fhrs_establishments_full_by_id[
                 suggested_match.fhrs_id]
             est_properties = get_selected_fhrs_properties(suggested_match_full)
-            est_properties["parsedAddress"] = parse_establishment_address(
-                suggested_match_full)
             properties["suggestedMatches"].append(est_properties)
 
         features.append(

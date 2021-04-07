@@ -8,6 +8,7 @@ import {
   getUnparsedAddressFootnote,
   handleJOSMAction,
   handleParsedAddressLoadError,
+  handleSuggestedMatchAddress,
   highlightBadClass,
 } from "./inspector_helpers";
 
@@ -273,26 +274,9 @@ export default class Inspector {
         heading: "Suggested match",
         cssClass: "suggested-match",
       });
-
-      const josmAddTagsPara = createElementWith(
-        "p", "Add tags in JOSM", "action",
-      );
-      handleJOSMAction({
-        url: getJOSMAddTagsURL(suggestedMatch, properties),
-        actionElement: josmAddTagsPara,
-        statusElement: createElementWith("p", "", "footnote"),
-        statusAfter: josmAddTagsPara,
-      });
+      const josmAddTagsPara = createElementWith("p", "Loading parsed address");
+      handleSuggestedMatchAddress(properties, suggestedMatch, josmAddTagsPara);
       suggestedMatchDiv.querySelector("div.actions").append(josmAddTagsPara);
-
-      const unparsedAddressFootnote = (
-        getUnparsedAddressFootnote(suggestedMatch)
-      );
-      if (unparsedAddressFootnote.innerHTML) {
-        suggestedMatchDiv.querySelector("div.actions")
-          .append(unparsedAddressFootnote);
-      }
-
       this.element.append(suggestedMatchDiv);
     });
   }
