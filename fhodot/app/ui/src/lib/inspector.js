@@ -7,6 +7,7 @@ import {
   getOSMObjectDiv,
   getUnparsedAddressFootnote,
   handleJOSMAction,
+  handleParsedAddressLoadError,
   highlightBadClass,
 } from "./inspector_helpers";
 
@@ -297,27 +298,6 @@ export default class Inspector {
   }
 
   /**
-   * Handle an error in loading a parsed FHRS establishment address
-   */
-  handleParsedAddressLoadError(error, fetchAddressFunction) {
-    if (error instanceof TypeError) {
-      this.linkDivFirstPara.innerHTML = `
-        Error loading parsed address for FHRS establishment. Check network
-        connection and <span class="action"> try again</span>`;
-    } else if (error.name === "AbortError") {
-      this.linkDivFirstPara.innerHTML = `
-        Loading parsed address for FHRS establishment was cancelled because of
-        another fetch action. <span class="action">Try again</span>`;
-    } else {
-      this.linkDivFirstPara.innerHTML = `
-        API returned an error loading parsed address for FHRS establishment`;
-      throw error;
-    }
-    this.linkDivFirstPara.querySelector("span.action")
-      .addEventListener("click", fetchAddressFunction);
-  }
-
-  /**
    * Called by remember method to prepare remember div and link div
    */
   prepareRememberAndLinkDivs(type, properties) {
@@ -382,9 +362,9 @@ export default class Inspector {
             this.element.append(this.rememberDiv);
             this.element.append(this.linkDiv);
           })
-          .catch((error) => {
-            this.handleParsedAddressLoadError(error, fetchAddress);
-          });
+          .catch((error) => handleParsedAddressLoadError(
+            error, this.linkDivFirstPara, fetchAddress,
+          ));
       };
 
       fetchAddress();
@@ -459,9 +439,9 @@ export default class Inspector {
             this.linkDiv.append(unparsedAddressFootnote);
           }
         })
-        .catch((error) => {
-          this.handleParsedAddressLoadError(error, fetchAddress);
-        });
+        .catch((error) => handleParsedAddressLoadError(
+          error, this.linkDivFirstPara, fetchAddress,
+        ));
     };
 
     fetchAddress();

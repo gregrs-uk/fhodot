@@ -239,3 +239,27 @@ export const getUnparsedAddressFootnote = (fhrsProperties) => {
   }
   return createElementWith("p", html, "footnote");
 };
+
+/**
+ * Handle an error in loading a parsed FHRS establishment address
+ */
+export const handleParsedAddressLoadError = (
+  error, element, fetchAddressFunction,
+) => {
+  /* eslint-disable no-param-reassign */
+  if (error instanceof TypeError) {
+    element.innerHTML = `
+      Error loading parsed address for FHRS establishment. Check network
+      connection and <span class="action"> try again</span>`;
+  } else if (error.name === "AbortError") {
+    element.innerHTML = `
+      Loading parsed address for FHRS establishment was cancelled because of
+      another fetch action. <span class="action">Try again</span>`;
+  } else {
+    element.innerHTML = `
+      API returned an error loading parsed address for FHRS establishment`;
+    throw error;
+  }
+  element.querySelector("span.action")
+    .addEventListener("click", fetchAddressFunction);
+};
