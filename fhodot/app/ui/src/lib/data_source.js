@@ -157,33 +157,31 @@ export default class DataSource {
 
   /**
    * Reload necessary data and refresh map/tables
+   *
+   * Return promise
    */
   refresh(map) {
     if (map.belowMinZoomWithMarkers) {
-      this.refreshBelowMinZoomWithMarkers(map);
-    } else {
-      this.refreshAtOrAboveMinZoomWithMarkers(map);
+      return this.refreshBelowMinZoomWithMarkers(map);
     }
+    return this.refreshAtOrAboveMinZoomWithMarkers(map);
   }
 
   /**
    * Clear stats layer and refresh markers/lines
+   *
+   * Return promise
    */
   refreshAtOrAboveMinZoomWithMarkers(map) {
     // remove stats multipolygons but leave layer within the group enabled
     this.clearStatsMultiPolygons();
     const url = new URL(this.jsonURL, window.location.href);
     url.search = new URLSearchParams(map.bboxParams);
-    fetchAbortPrevious(url)
+    return fetchAbortPrevious(url)
       .then((response) => response.json())
       .then((data) => {
         this.replaceMarkersLines(data);
         this.updateTables(data);
-      })
-      .catch((error) => {
-        if (error.name !== "AbortError") {
-          throw error;
-        }
       });
   }
 
@@ -223,6 +221,8 @@ export default class DataSource {
 
   /**
    * Clear markers/lines and refresh stats layer
+   *
+   * Return promise
    */
   refreshBelowMinZoomWithMarkers(map) {
     // remove markers/lines but leave each layer within the group enabled
@@ -234,17 +234,12 @@ export default class DataSource {
       const params = new URLSearchParams(map.bboxParams);
       params.append("zoom", map.currentZoom);
       url.search = params;
-      fetchAbortPrevious(url)
+      return fetchAbortPrevious(url)
         .then((response) => response.json())
-        .then((data) => {
-          this.replaceStatsMultiPolygons(data);
-        })
-        .catch((error) => {
-          if (error.name !== "AbortError") {
-            throw error;
-          }
-        });
+        .then((data) => this.replaceStatsMultiPolygons(data));
     }
+
+    return Promise.resolve(); // if no statsLayer
   }
 
   /**

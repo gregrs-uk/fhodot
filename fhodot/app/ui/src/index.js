@@ -9,6 +9,7 @@ import "./styles.css";
 import Inspector from "./lib/inspector";
 import SlippyMap from "./lib/slippy_map";
 import GraphArea from "./lib/graph_area";
+import { PayloadTooLargeError } from "./lib/utils";
 import getDataCollection from "./data_collection_definition";
 import { tableGroup } from "./table_definitions";
 
@@ -31,7 +32,19 @@ const graphArea = new GraphArea("graphs");
 map.addLayerControl(dataCollection);
 
 const refreshCurrentDataSource = () => {
-  dataCollection.getCurrentDataSource(map).refresh(map);
+  dataCollection.getCurrentDataSource(map).refresh(map)
+    .catch((error) => {
+      if (error.name === "AbortError") return null;
+      if (error instanceof PayloadTooLargeError) {
+        dataCollection.getCurrentDataSource(map).clearPoints();
+        dataCollection.getCurrentDataSource(map).clearLines();
+        map.messageControl.showMessage(`
+          Cannot fetch map data for this area because there are too many
+          objects. Try zooming in.`);
+        return null;
+      }
+      throw error;
+    });
 };
 
 // null if layer name invalid
@@ -84,6 +97,7 @@ document.addEventListener("mapZoomMarkersVisible", () => {
   graphArea.clear();
 });
 document.addEventListener("mapMoveEnd", () => {
+  map.messageControl.hide();
   refreshCurrentDataSource();
   updateURL();
 });
@@ -101,6 +115,7 @@ document.addEventListener("mapLayerChange", () => {
   }
   tableGroup.clear();
   graphArea.clear();
+  map.messageControl.hide();
   refreshCurrentDataSource();
   updateURL();
 });

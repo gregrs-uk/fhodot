@@ -17,7 +17,7 @@ from fhodot.app.suggest import (get_suggested_matches_by_osm_id,
                                 get_full_osm_objects_query,
                                 get_full_fhrs_establishments_dict)
 from fhodot.app.utils import (
-    get_bbox, get_geojson_line, get_geojson_point,
+    num_objects_within_limit, get_bbox, get_geojson_line, get_geojson_point,
     get_geojson_feature_collection_string, query_within_bbox)
 from fhodot.database import Session
 from fhodot.models import FHRSEstablishment, OSMFHRSMapping, OSMObject
@@ -66,8 +66,10 @@ def data_distant():
 def data_fhrs():
     """FHRS establishment data for a bounding box in GeoJSON format"""
 
-    establishments = query_within_bbox(FHRSEstablishment,
-                                       get_bbox(request.args)).\
+    bbox = get_bbox(request.args)
+    if not num_objects_within_limit(FHRSEstablishment, bbox, 10000):
+        abort(413)
+    establishments = query_within_bbox(FHRSEstablishment, bbox).\
         options(joinedload("osm_mappings").joinedload("osm_object"),
                 undefer("osm_mappings.distance"))
 
@@ -86,7 +88,10 @@ def data_fhrs():
 def data_osm():
     """OSM object data for a bounding box in GeoJSON format"""
 
-    osm_objects = query_within_bbox(OSMObject, get_bbox(request.args)).\
+    bbox = get_bbox(request.args)
+    if not num_objects_within_limit(OSMObject, bbox, 10000):
+        abort(413)
+    osm_objects = query_within_bbox(OSMObject, bbox).\
         options(joinedload("fhrs_mappings").joinedload("fhrs_establishment"),
                 undefer("fhrs_mappings.distance"))
 
@@ -145,7 +150,11 @@ def data_stats_osm():
 def data_suggest():
     """OSM objects with suggested matches for a bbox in GeoJSON format"""
 
-    matches_by_osm_id = get_suggested_matches_by_osm_id(get_bbox(request.args))
+    bbox = get_bbox(request.args)
+    if not num_objects_within_limit(OSMObject, bbox, 1000):
+        abort(413)
+
+    matches_by_osm_id = get_suggested_matches_by_osm_id(bbox)
     osm_objects_full = get_full_osm_objects_query(matches_by_osm_id)
     fhrs_establishments_full_by_id = get_full_fhrs_establishments_dict(
         matches_by_osm_id)

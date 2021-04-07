@@ -34,6 +34,16 @@ def get_envelope(bbox):
         Geography)
 
 
+def num_objects_within_limit(object_class, bbox, limit):
+    """Check whether number of objects within bounding box <= limit"""
+    envelope = get_envelope(bbox)
+    count = Session.query(object_class).\
+        filter(ST_Intersects(object_class.location, envelope)).\
+        limit(limit + 1).\
+        count()
+    return count <= limit
+
+
 def query_within_bbox(object_class, bbox):
     """Query database for instances of object_class within bbox
 

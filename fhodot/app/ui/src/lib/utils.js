@@ -121,6 +121,16 @@ export const bindJOSMAction = (url, element) => (
 );
 
 /**
+ * Custom error to throw when receiving a 413 response
+ */
+export class PayloadTooLargeError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = this.constructor.name;
+  }
+}
+
+/**
  * AbortController for the previous fetch
  */
 let fetchAbortController;
@@ -139,11 +149,11 @@ export const fetchAbortPrevious = (url) => {
   fetchAbortController = new AbortController();
   return fetch(url, { signal: fetchAbortController.signal })
     .then((response) => {
-      if (!response.ok) {
-        throw Error(
-          `fetch received response ${response.status} ${response.statusText}`,
-        );
-      }
-      return response;
+      if (response.ok) return response;
+      const message = (
+        `fetch received response ${response.status} ${response.statusText}`
+      );
+      if (response.status === 413) throw new PayloadTooLargeError(message);
+      throw new Error(message);
     });
 };
