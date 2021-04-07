@@ -129,6 +129,33 @@ export default class DataSource {
   }
 
   /**
+   * Remove this DataSource's point markers from its pointLayer
+   *
+   * Doesn't remove the pointLayer itself from the layerGroup
+   */
+  clearPoints() {
+    this.pointLayer.clearLayers();
+  }
+
+  /**
+   * Remove this DataSource's lines from its lineLayer
+   *
+   * Doesn't remove the lineLayer itself from the layerGroup
+   */
+  clearLines() {
+    if (this.lineLayer) this.lineLayer.clearLayers();
+  }
+
+  /**
+   * Remove this DataSource's stats multipolygons from its statsLayer
+   *
+   * Doesn't remove the statsLayer itself from the layerGroup
+   */
+  clearStatsMultiPolygons() {
+    if (this.statsLayer) this.statsLayer.clearLayers();
+  }
+
+  /**
    * Reload necessary data and refresh map/tables
    */
   refresh(map) {
@@ -144,7 +171,7 @@ export default class DataSource {
    */
   refreshAtOrAboveMinZoomWithMarkers(map) {
     // remove stats multipolygons but leave layer within the group enabled
-    if (this.statsLayer) this.statsLayer.clearLayers();
+    this.clearStatsMultiPolygons();
     const url = new URL(this.jsonURL, window.location.href);
     url.search = new URLSearchParams(map.bboxParams);
     fetchAbortPrevious(url)
@@ -173,7 +200,7 @@ export default class DataSource {
       });
 
       // remove existing lines to prevent duplication
-      this.lineLayer.clearLayers();
+      this.clearLines();
       this.lineLayer.addLayer(lines);
     }
 
@@ -190,7 +217,7 @@ export default class DataSource {
     ));
 
     // remove existing markers to prevent duplication
-    this.pointLayer.clearLayers();
+    this.clearPoints();
     this.pointLayer.addLayer(markers);
   }
 
@@ -199,8 +226,8 @@ export default class DataSource {
    */
   refreshBelowMinZoomWithMarkers(map) {
     // remove markers/lines but leave each layer within the group enabled
-    this.pointLayer.clearLayers();
-    if (this.lineLayer) this.lineLayer.clearLayers();
+    this.clearPoints();
+    this.clearLines();
 
     if (this.statsLayer) {
       const url = new URL(this.statsJSONURL, window.location.href);
@@ -234,7 +261,7 @@ export default class DataSource {
     districts.on("click", districtOnClick);
 
     // remove existing markers to prevent duplication
-    this.statsLayer.clearLayers();
+    this.clearStatsMultiPolygons();
     this.statsLayer.addLayer(districts);
   }
 
