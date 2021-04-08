@@ -83,7 +83,7 @@ export default class DataSource {
     this.name = arg.name;
     this.type = arg.type; // used to determine correct layer switching
     if (!["fhrs", "osm"].includes(arg.type)) {
-      throw Error("DataSource type should be 'fhrs' or 'osm'");
+      throw new Error("DataSource type should be 'fhrs' or 'osm'");
     }
     this.label = arg.label;
     this.pointLayer = new MarkerClusterGroup({

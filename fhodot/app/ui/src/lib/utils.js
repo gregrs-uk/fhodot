@@ -3,7 +3,7 @@
  */
 export const createElementWith = (tag, content = "", cssClass = null) => {
   if (!content && !cssClass) {
-    throw Error(
+    throw new Error(
       "createElementWith only got tag. Use document.createElement instead",
     );
   }
