@@ -32,9 +32,20 @@ const graphArea = new GraphArea("graphs");
 map.addLayerControl(dataCollection);
 
 const refreshCurrentDataSource = () => {
+  let refreshCompleted = false;
+
   dataCollection.getCurrentDataSource(map).refresh(map)
+    .then(() => {
+      refreshCompleted = true;
+      map.messageControl.setMessage("Loaded"); // without showing if hidden
+      map.messageControl.hide(); // hide loading message if present
+    })
     .catch((error) => {
-      if (error.name === "AbortError") return null;
+      refreshCompleted = true; // even though unsuccessful
+      if (error.name === "AbortError") {
+        map.messageControl.hide(); // hide loading message if present
+        return null;
+      }
       if (error instanceof PayloadTooLargeError) {
         dataCollection.getCurrentDataSource(map).clearPoints();
         dataCollection.getCurrentDataSource(map).clearLines();
@@ -43,8 +54,15 @@ const refreshCurrentDataSource = () => {
           objects. Try zooming in.`);
         return null;
       }
+      map.messageControl.showMessage("Error loading map data");
       throw error;
     });
+
+  setTimeout(() => {
+    if (!refreshCompleted) {
+      map.messageControl.showMessage("Loading&hellip;");
+    }
+  }, 500);
 };
 
 // null if layer name invalid
