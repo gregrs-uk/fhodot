@@ -19,8 +19,10 @@ import {
 export default class Inspector {
   constructor(elementID) {
     this.element = document.getElementById(elementID);
-    this.zoomMessage = null;
-    this.statsDiv = null;
+    this.zoomMessage = createElementWith(
+      "p", "Zoom in to load markers", "zoom-message",
+    );
+    this.statsDiv = document.createElement("div");
     this.rememberDiv = null;
     this.rememberedProperties = null;
     this.linkDiv = null; // for linking a remembered object
@@ -63,9 +65,6 @@ export default class Inspector {
    */
   showZoomInMessage() {
     this.clearAll();
-    this.zoomMessage = createElementWith(
-      "p", "Zoom in to load markers", "zoom-message",
-    );
     this.element.append(this.zoomMessage);
   }
 
@@ -435,7 +434,6 @@ export default class Inspector {
    * Show district stats div
    */
   showStatsDiv() {
-    this.statsDiv = document.createElement("div");
     this.element.append(this.statsDiv);
   }
 
