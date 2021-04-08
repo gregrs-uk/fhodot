@@ -211,7 +211,7 @@ export default class DataSource {
     });
 
     markers.on("click", (e) => (
-      this.markerClickFunction(e.layer.feature.properties)
+      this.markerClickFunction(e.sourceTarget.feature.properties)
     ));
 
     // remove existing markers to prevent duplication
