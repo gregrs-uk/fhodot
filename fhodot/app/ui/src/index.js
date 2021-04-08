@@ -31,10 +31,12 @@ const graphArea = new GraphArea("graphs");
 
 map.addLayerControl(dataCollection);
 
+const currentDataSource = () => dataCollection.getCurrentDataSource(map);
+
 const refreshCurrentDataSource = () => {
   let refreshCompleted = false;
 
-  dataCollection.getCurrentDataSource(map).refresh(map)
+  currentDataSource().refresh(map)
     .then(() => {
       refreshCompleted = true;
       map.messageControl.setMessage("Loaded"); // without showing if hidden
@@ -47,8 +49,8 @@ const refreshCurrentDataSource = () => {
         return null;
       }
       if (error instanceof PayloadTooLargeError) {
-        dataCollection.getCurrentDataSource(map).clearPoints();
-        dataCollection.getCurrentDataSource(map).clearLines();
+        currentDataSource().clearPoints();
+        currentDataSource().clearLines();
         map.messageControl.showMessage(`
           Cannot fetch map data for this area because there are too many
           objects. Try zooming in.`);
@@ -76,11 +78,9 @@ refreshCurrentDataSource();
 
 if (map.belowMinZoomWithMarkers) {
   inspector.showZoomInMessage();
-  if (dataCollection.getCurrentDataSource(map).statsLayer) {
+  if (currentDataSource().statsLayer) {
     inspector.showStatsDiv();
-    inspector.updateStatsDiv(
-      null, dataCollection.getCurrentDataSource(map).name,
-    );
+    inspector.updateStatsDiv(null, currentDataSource().name);
   }
 }
 
@@ -90,9 +90,7 @@ const updateURL = () => {
   url.searchParams.set("lat", map.currentCentreLatLon.lat.toFixed(5));
   url.searchParams.set("lon", map.currentCentreLatLon.lng.toFixed(5));
   url.searchParams.set("zoom", map.currentZoom);
-  url.searchParams.set(
-    "layer", dataCollection.getCurrentDataSource(map).name,
-  );
+  url.searchParams.set("layer", currentDataSource().name);
   window.history.replaceState(null, "", url);
 };
 
@@ -101,11 +99,9 @@ const updateURL = () => {
 // map-related events
 document.addEventListener("mapZoomNoMarkers", () => {
   inspector.showZoomInMessage();
-  if (dataCollection.getCurrentDataSource(map).statsLayer) {
+  if (currentDataSource().statsLayer) {
     inspector.showStatsDiv();
-    inspector.updateStatsDiv(
-      null, dataCollection.getCurrentDataSource(map).name,
-    );
+    inspector.updateStatsDiv(null, currentDataSource().name);
   }
   tableGroup.clear();
 });
@@ -124,11 +120,9 @@ document.addEventListener("mapLayerChange", () => {
   inspector.forgetRememberedProperties();
   if (map.belowMinZoomWithMarkers) {
     inspector.showZoomInMessage();
-    if (dataCollection.getCurrentDataSource(map).statsLayer) {
+    if (currentDataSource().statsLayer) {
       inspector.showStatsDiv();
-      inspector.updateStatsDiv(
-        null, dataCollection.getCurrentDataSource(map).name,
-      );
+      inspector.updateStatsDiv(null, currentDataSource().name);
     }
   }
   tableGroup.clear();
@@ -140,26 +134,21 @@ document.addEventListener("mapLayerChange", () => {
 
 // district polygon-related events
 document.addEventListener("districtMouseOver", (e) => {
-  inspector.updateStatsDiv(
-    e.detail, dataCollection.getCurrentDataSource(map).name,
-  );
+  inspector.updateStatsDiv(e.detail, currentDataSource().name);
 });
 document.addEventListener("districtMouseOut", () => {
-  inspector.updateStatsDiv(
-    null, dataCollection.getCurrentDataSource(map).name,
-  );
+  inspector.updateStatsDiv(null, currentDataSource().name);
 });
 document.addEventListener("districtClick", (e) => {
-  const graphType = dataCollection.getCurrentDataSource(map).name;
+  const graphType = currentDataSource().name;
   const url = `graphs/${graphType}-${e.detail.districtCode}.png`;
   graphArea.updateGraph(url);
 });
 
 // automatically switching layers when linking OSM/FHRS features
 document.addEventListener("autoChooseLayer", () => {
-  const currentDataSource = dataCollection.getCurrentDataSource(map);
-  currentDataSource.removeLayerGroupFrom(map);
-  const newDataSource = (currentDataSource.type === "osm" ? "fhrs" : "osm");
+  const newDataSource = (currentDataSource().type === "osm" ? "fhrs" : "osm");
+  currentDataSource().removeLayerGroupFrom(map);
   // this will also cause SlippyMap to fire mapLayerChange event on document
   dataCollection.getDataSourceByName(newDataSource).addLayerGroupTo(map);
 });
@@ -168,21 +157,18 @@ document.addEventListener("autoChooseLayer", () => {
 document.addEventListener("keyup", (e) => {
   const newDataSource = dataCollection.getDataSourceByKeyboardShortcut(e.key);
   if (!newDataSource) return;
-  const currentDataSource = dataCollection.getCurrentDataSource(map);
-  if (newDataSource !== currentDataSource) {
-    currentDataSource.removeLayerGroupFrom(map);
+  if (newDataSource !== currentDataSource()) {
+    currentDataSource().removeLayerGroupFrom(map);
     newDataSource.addLayerGroupTo(map);
   }
 });
 
 // select feature and optionally zoom map
 document.addEventListener("requestSelect", (e) => {
-  dataCollection.getCurrentDataSource(map)
-    .markerClickFunction(e.detail.properties);
+  currentDataSource().markerClickFunction(e.detail.properties);
 });
 document.addEventListener("requestSelectAndZoom", (e) => {
   const [lon, lat] = e.detail.geometry.coordinates;
   map.zoomTo(lat, lon);
-  dataCollection.getCurrentDataSource(map)
-    .markerClickFunction(e.detail.properties);
+  currentDataSource().markerClickFunction(e.detail.properties);
 });
