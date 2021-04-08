@@ -14,7 +14,8 @@ export default class SlippyMap {
     // default view is of entire of Great Britain (with no markers)
     const initialCentre = options.initialCentre || [55.6, -5.2];
     const initialZoom = options.initialZoom || 5;
-    this.minZoomWithMarkers = options.minZoomWithMarkers || 14;
+    // can comfortably see smallest stats multipolygons at zoom level 10
+    this.minZoomWithMarkers = options.minZoomWithMarkers || 11;
     this.maxZoom = options.maxZoom || 19;
     this.leafletMap = leafletMap(elementID, {
       center: initialCentre,
