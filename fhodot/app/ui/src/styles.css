@@ -123,16 +123,24 @@ footer {
   top: -2.5px;
 }
 
-/* MAP: edit control */
+/* MAP: controls */
 #map div.leaflet-edit-control {
   margin-bottom: 20px;
 }
-#map div.leaflet-edit-control p {
+#map div.leaflet-message-control {
+  max-width: 200px;
+  margin-bottom: 5px;
+  opacity: 1;
+  /* delay transition, avoiding message disappearing/reappearing quickly */
+  transition: opacity 500ms 500ms;
+}
+#map div.leaflet-message-control.hidden {
+  opacity: 0;
+}
+#map div.leaflet-edit-control p, #map div.leaflet-message-control p {
   margin: 0px;
-  padding: 0em 0.6em;
-  border-radius: 4px;
-  height: 26px;
-  line-height: 26px;
+  padding: 0.4em 0.6em;
+  border-radius: 2px;
   background: rgb(255, 255, 255);
 }
 

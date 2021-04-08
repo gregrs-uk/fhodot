@@ -7,6 +7,7 @@
 
 import { control, map as leafletMap, tileLayer } from "leaflet";
 import EditControl from "./leaflet_edit_control";
+import MessageControl from "./leaflet_message_control";
 
 export default class SlippyMap {
   constructor(elementID, options = {}) {
@@ -22,6 +23,7 @@ export default class SlippyMap {
     });
 
     new EditControl().addTo(this.leafletMap);
+    this.messageControl = new MessageControl().addTo(this.leafletMap);
 
     const attribution = `
       &copy; <a href='https://www.openstreetmap.org/copyright' target='_blank'>
