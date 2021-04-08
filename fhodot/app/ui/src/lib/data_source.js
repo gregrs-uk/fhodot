@@ -10,7 +10,12 @@
 import { circleMarker, geoJson, LayerGroup } from "leaflet";
 import { MarkerClusterGroup } from "leaflet.markercluster";
 
-import { createClusterIcon, styleMarker } from "./marker_styling";
+import {
+  createClusterIcon,
+  getDefaultCircleMarkerStyle,
+  getHighlightedCircleMarkerStyle,
+  styleMarker,
+} from "./marker_styling";
 import { fetchAbortPrevious } from "./utils";
 
 /**
@@ -81,14 +86,10 @@ const districtOnClick = (e) => {
 export default class DataSource {
   constructor(arg) {
     this.name = arg.name;
-    this.type = arg.type; // used to determine correct layer switching
-    if (!["fhrs", "osm"].includes(arg.type)) {
-      throw new Error("DataSource type should be 'fhrs' or 'osm'");
-    }
     this.label = arg.label;
     this.pointLayer = new MarkerClusterGroup({
       maxClusterRadius: 10,
-      iconCreateFunction: createClusterIcon,
+      iconCreateFunction: (cluster) => createClusterIcon(cluster, this),
     });
     // optional line layer e.g. for showing distant matches
     this.lineLayer = arg.lineLayer || null;
@@ -97,8 +98,23 @@ export default class DataSource {
     this.jsonURL = arg.jsonURL;
     this.statsJSONURL = arg.statsJSONURL;
     this.markerClickFunction = arg.markerClickFunction;
+    this.selectedFeatureID = null;
     this.tables = arg.tables;
     this.keyboardShortcut = arg.keyboardShortcut;
+
+    // type used to determine primary key and correct layer switching
+    if (arg.type === "fhrs") {
+      this.getFeatureID = (feature) => feature.properties.fhrsID;
+    } else if (arg.type === "osm") {
+      this.getFeatureID = (feature) => (
+        feature.properties.osmType + feature.properties.osmIDByType
+      );
+    } else {
+      throw new Error(
+        `DataSource ${this.name}: type should be 'fhrs' or 'osm'`,
+      );
+    }
+    this.type = arg.type;
 
     // layerGroup with all data source's layers, for adding to layer control
     const layers = [this.pointLayer];
@@ -207,12 +223,20 @@ export default class DataSource {
       pointToLayer: (feature, latlng) => circleMarker(latlng, {
         bubblingMouseEvents: false, // prevent unspiderfy on marker click
       }),
-      style: styleMarker,
+      style: (feature) => styleMarker(feature, this),
     });
 
-    markers.on("click", (e) => (
-      this.markerClickFunction(e.sourceTarget.feature.properties)
-    ));
+    markers.on("click", (e) => {
+      const clickedMarker = e.sourceTarget;
+
+      this.setSelectedFeatureID(clickedMarker.feature);
+      e.target.setStyle(getDefaultCircleMarkerStyle()); // all markers
+      clickedMarker.setStyle(getHighlightedCircleMarkerStyle());
+      this.pointLayer.refreshClusters(); // all clusters
+      clickedMarker.bringToFront(); // although not in front of clusters
+
+      this.markerClickFunction(clickedMarker.feature.properties);
+    });
 
     // remove existing markers to prevent duplication
     this.clearPoints();
@@ -258,6 +282,26 @@ export default class DataSource {
     // remove existing markers to prevent duplication
     this.clearStatsMultiPolygons();
     this.statsLayer.addLayer(districts);
+  }
+
+  /**
+   * Set selectedFeatureID from feature
+   *
+   * This is used to remember the selected feature so its marker can be
+   * re-highlighted e.g. when the map is moved.
+   */
+  setSelectedFeatureID(feature) {
+    this.selectedFeatureID = this.getFeatureID(feature);
+  }
+
+  /**
+   * Forget which marker was previously highlighted
+   *
+   * This avoids the marker being highlighted again e.g. when this data
+   * source is re-enabled after a map layer change.
+   */
+  forgetHighlightedMarker() {
+    this.selectedFeatureID = null;
   }
 
   /**

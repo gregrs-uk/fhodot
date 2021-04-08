@@ -6,9 +6,10 @@ import "leaflet/dist/leaflet.css";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "./styles.css";
 
-import Inspector from "./lib/inspector";
-import SlippyMap from "./lib/slippy_map";
 import GraphArea from "./lib/graph_area";
+import Inspector from "./lib/inspector";
+import { styleMarker } from "./lib/marker_styling";
+import SlippyMap from "./lib/slippy_map";
 import { PayloadTooLargeError } from "./lib/utils";
 import getDataCollection from "./data_collection_definition";
 import { tableGroup } from "./table_definitions";
@@ -99,6 +100,7 @@ const updateURL = () => {
 // map-related events
 document.addEventListener("mapZoomNoMarkers", () => {
   inspector.showZoomInMessage();
+  currentDataSource().forgetHighlightedMarker();
   if (currentDataSource().statsLayer) {
     inspector.showStatsDiv();
     inspector.updateStatsDiv(null, currentDataSource().name);
@@ -118,6 +120,7 @@ document.addEventListener("mapMoveEnd", () => {
 document.addEventListener("mapLayerChange", () => {
   inspector.clearAll();
   inspector.forgetRememberedProperties();
+  currentDataSource().forgetHighlightedMarker();
   if (map.belowMinZoomWithMarkers) {
     inspector.showZoomInMessage();
     if (currentDataSource().statsLayer) {
@@ -163,12 +166,25 @@ document.addEventListener("keyup", (e) => {
   }
 });
 
+const selectFeature = (feature, dataSource) => {
+  dataSource.setSelectedFeatureID(feature);
+  dataSource.pointLayer.eachLayer((marker) => {
+    marker.setStyle(styleMarker(marker.feature, dataSource));
+    if (dataSource.getFeatureID(marker.feature)
+        === dataSource.selectedFeatureID) {
+      marker.bringToFront();
+    }
+  });
+  dataSource.pointLayer.refreshClusters();
+  dataSource.markerClickFunction(feature.properties);
+};
+
 // select feature and optionally zoom map
 document.addEventListener("requestSelect", (e) => {
-  currentDataSource().markerClickFunction(e.detail.properties);
+  selectFeature(e.detail, currentDataSource());
 });
 document.addEventListener("requestSelectAndZoom", (e) => {
   const [lon, lat] = e.detail.geometry.coordinates;
+  selectFeature(e.detail, currentDataSource());
   map.zoomTo(lat, lon);
-  currentDataSource().markerClickFunction(e.detail.properties);
 });
