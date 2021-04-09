@@ -357,11 +357,6 @@ def add_authority_districts_in_session():
     for authority in query:
         district = authority.get_local_authority_district()
 
-        if authority.name == "East Renfrewshire":
-            # has a number of establishments with postcode listed as
-            # PRIVATE whose location has been set in Chelmsford
-            district = Session.query(LocalAuthorityDistrict).get("S12000011")
-
         if district and not district.fhrs_authority:
             debug("Setting local authority district for FHRS authority " +
                   f"{authority.name} to {district.name}")

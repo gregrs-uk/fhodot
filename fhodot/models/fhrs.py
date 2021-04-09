@@ -247,10 +247,15 @@ class FHRSAuthority(DeclarativeBase):
         # centroid can fall outside the district depending on the shape
         # of its boundary.
 
-        # fhrs_authority will be used by add_authority_districts_in_session
         query = Session.query(FHRSEstablishment).\
-            filter(FHRSEstablishment.authority_code == self.code).\
-            options(joinedload("district").joinedload("fhrs_authority"))
+            filter(
+                FHRSEstablishment.authority_code == self.code,
+                # a number of establishments in East Renfrewshire have
+                # this postcode and location far away in Chelmsford
+                FHRSEstablishment.postcode_original != "PRIVATE").\
+            options(
+                # fhrs_authority used by add_authority_districts_in_session
+                joinedload("district").joinedload("fhrs_authority"))
 
         # only use establishments that have a location set and are
         # within a district
@@ -262,7 +267,7 @@ class FHRSAuthority(DeclarativeBase):
         proportion = counts[top_district] / sum(counts.values())
 
         # if 90% or more of the authority's establishments are in the
-        # top district, we will assume that they are associated
+        # top district, assume that they are associated
         if proportion > 0.9:
             return top_district
         return None
