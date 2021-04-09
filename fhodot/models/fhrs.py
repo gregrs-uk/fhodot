@@ -255,6 +255,8 @@ class FHRSAuthority(DeclarativeBase):
         # only use establishments that have a location set and are
         # within a district
         districts = [est.district for est in query if est.district]
+        if not districts:
+            return None # avoid ValueError in max() below
         counts = {dist:districts.count(dist) for dist in districts}
         top_district = max(counts, key=counts.get)
         proportion = counts[top_district] / sum(counts.values())
