@@ -11,7 +11,7 @@ from re import fullmatch, sub
 
 from geoalchemy2 import Geography, Geometry
 from geoalchemy2.functions import ST_X, ST_Y
-from sqlalchemy import (cast, Column, Date, DateTime, ForeignKey, Integer,
+from sqlalchemy import (cast, Column, Date, DateTime, ForeignKey, Integer, or_,
                         String, Text)
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import column_property, joinedload, relationship, validates
@@ -252,7 +252,8 @@ class FHRSAuthority(DeclarativeBase):
                 FHRSEstablishment.authority_code == self.code,
                 # a number of establishments in East Renfrewshire have
                 # this postcode and location far away in Chelmsford
-                FHRSEstablishment.postcode_original != "PRIVATE").\
+                or_(FHRSEstablishment.postcode_original != "PRIVATE",
+                    FHRSEstablishment.postcode_original.is_(None))).\
             options(
                 # fhrs_authority used by add_authority_districts_in_session
                 joinedload("district").joinedload("fhrs_authority"))
