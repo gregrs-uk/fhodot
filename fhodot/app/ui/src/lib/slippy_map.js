@@ -40,15 +40,8 @@ export default class SlippyMap {
       maxZoom: this.maxZoom,
     }).addTo(this.leafletMap);
 
-    this.previousZoom = null;
-    this.leafletMap.addEventListener("zoomstart", this.onZoomStart.bind(this));
-    this.leafletMap.addEventListener("zoomend", this.onZoomEnd.bind(this));
-    this.leafletMap.addEventListener("moveend", () => {
-      document.dispatchEvent(new Event("mapMoveEnd"));
-    });
-    this.leafletMap.addEventListener("baselayerchange", () => {
-      document.dispatchEvent(new Event("mapLayerChange"));
-    });
+    this.leafletMap
+      .on("moveend", () => document.dispatchEvent(new Event("mapMoveEnd")));
   }
 
   /**
@@ -100,27 +93,6 @@ export default class SlippyMap {
    */
   get currentZoom() {
     return this.leafletMap.getZoom();
-  }
-
-  /**
-   * Store the previous zoom level when starting a zoom
-   */
-  onZoomStart() {
-    this.previousZoom = this.leafletMap.getZoom();
-  }
-
-  /**
-   * Trigger an appropriate event on document when finishing a zoom
-   */
-  onZoomEnd() {
-    const currentZoom = this.leafletMap.getZoom();
-    if (currentZoom === this.minZoomWithMarkers - 1
-        && currentZoom < this.previousZoom) {
-      document.dispatchEvent(new Event("mapZoomNoMarkers"));
-    } else if (currentZoom === this.minZoomWithMarkers
-        && currentZoom > this.previousZoom) {
-      document.dispatchEvent(new Event("mapZoomMarkersVisible"));
-    }
   }
 
   /**

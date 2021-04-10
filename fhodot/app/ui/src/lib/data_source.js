@@ -116,11 +116,23 @@ export default class DataSource {
     }
     this.type = arg.type;
 
-    // layerGroup with all data source's layers, for adding to layer control
-    const layers = [this.pointLayer];
-    if (this.lineLayer) layers.push(this.lineLayer);
-    if (this.statsLayer) layers.push(this.statsLayer);
-    this.layerGroup = new LayerGroup(layers);
+    // helper function to dispatch event with reference to this DataSource
+    const dispatchDocumentEvent = (name) => document.dispatchEvent(
+      new CustomEvent(name, { detail: this }),
+    );
+
+    this.pointLayer.on("add", () => dispatchDocumentEvent("pointLayerAdd"));
+    this.pointLayer
+      .on("remove", () => dispatchDocumentEvent("pointLayerRemove"));
+    if (this.statsLayer) {
+      this.statsLayer.on("add", () => dispatchDocumentEvent("statsLayerAdd"));
+      this.statsLayer
+        .on("remove", () => dispatchDocumentEvent("statsLayerRemove"));
+    }
+
+    // to hold data source's layers, for adding to layer control
+    this.layerGroup = new LayerGroup();
+    this.layerGroup.on("add", () => dispatchDocumentEvent("layerGroupAdd"));
   }
 
   /**
@@ -163,15 +175,6 @@ export default class DataSource {
   }
 
   /**
-   * Remove this DataSource's stats multipolygons from its statsLayer
-   *
-   * Doesn't remove the statsLayer itself from the layerGroup
-   */
-  clearStatsMultiPolygons() {
-    if (this.statsLayer) this.statsLayer.clearLayers();
-  }
-
-  /**
    * Reload necessary data and refresh map/tables
    *
    * Return promise
@@ -184,15 +187,20 @@ export default class DataSource {
   }
 
   /**
-   * Clear stats layer and refresh markers/lines
+   * Remove stats layer, add and refresh point/line layers
    *
    * Return promise
    */
   refreshAtOrAboveMinZoomWithMarkers(map) {
-    // remove stats multipolygons but leave layer within the group enabled
-    this.clearStatsMultiPolygons();
+    if (this.layerGroup.hasLayer(this.statsLayer)) {
+      this.layerGroup.removeLayer(this.statsLayer);
+    }
+    this.layerGroup.addLayer(this.pointLayer);
+    if (this.lineLayer) this.layerGroup.addLayer(this.lineLayer);
+
     const url = new URL(this.jsonURL, window.location.href);
     url.search = new URLSearchParams(map.bboxParams);
+
     return fetchAbortPrevious(url)
       .then((response) => response.json())
       .then((data) => {
@@ -244,16 +252,20 @@ export default class DataSource {
   }
 
   /**
-   * Clear markers/lines and refresh stats layer
+   * Remove point/line layers, add and refresh stats layer
    *
    * Return promise
    */
   refreshBelowMinZoomWithMarkers(map) {
-    // remove markers/lines but leave each layer within the group enabled
-    this.clearPoints();
-    this.clearLines();
+    if (this.layerGroup.hasLayer(this.pointLayer)) {
+      this.layerGroup.removeLayer(this.pointLayer);
+    }
+    if (this.layerGroup.hasLayer(this.lineLayer)) {
+      this.layerGroup.removeLayer(this.lineLayer);
+    }
 
     if (this.statsLayer) {
+      this.layerGroup.addLayer(this.statsLayer);
       const url = new URL(this.statsJSONURL, window.location.href);
       const params = new URLSearchParams(map.bboxParams);
       params.append("zoom", map.currentZoom);
@@ -280,7 +292,7 @@ export default class DataSource {
     districts.on("click", districtOnClick);
 
     // remove existing markers to prevent duplication
-    this.clearStatsMultiPolygons();
+    this.statsLayer.clearLayers();
     this.statsLayer.addLayer(districts);
   }
 

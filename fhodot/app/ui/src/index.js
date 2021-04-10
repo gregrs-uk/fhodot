@@ -34,10 +34,10 @@ map.addLayerControl(dataCollection);
 
 const currentDataSource = () => dataCollection.getCurrentDataSource(map);
 
-const refreshCurrentDataSource = () => {
+const refreshDataSource = (dataSource) => {
   let refreshCompleted = false;
 
-  currentDataSource().refresh(map)
+  dataSource.refresh(map)
     .then(() => {
       refreshCompleted = true;
       map.messageControl.setMessage("Loaded"); // without showing if hidden
@@ -50,8 +50,8 @@ const refreshCurrentDataSource = () => {
         return null;
       }
       if (error instanceof PayloadTooLargeError) {
-        currentDataSource().clearPoints();
-        currentDataSource().clearLines();
+        dataSource.clearPoints();
+        dataSource.clearLines();
         map.messageControl.showMessage(`
           Cannot fetch map data for this area because there are too many
           objects. Try zooming in.`);
@@ -66,6 +66,10 @@ const refreshCurrentDataSource = () => {
       map.messageControl.showMessage("Loading&hellip;");
     }
   }, 500);
+};
+
+const refreshCurrentDataSource = () => {
+  refreshDataSource(currentDataSource());
 };
 
 // null if layer name invalid
@@ -98,41 +102,35 @@ const updateURL = () => {
 // use document as a global message bus
 
 // map-related events
-document.addEventListener("mapZoomNoMarkers", () => {
-  inspector.showZoomInMessage();
-  currentDataSource().forgetHighlightedMarker();
-  if (currentDataSource().statsLayer) {
-    inspector.showStatsDiv();
-    inspector.updateStatsDiv(null, currentDataSource().name);
-  }
-  tableGroup.clear();
-});
-document.addEventListener("mapZoomMarkersVisible", () => {
-  inspector.removeZoomInMessage();
-  inspector.removeStatsDiv();
-  graphArea.clear();
-});
 document.addEventListener("mapMoveEnd", () => {
   map.messageControl.hide();
   refreshCurrentDataSource();
   updateURL();
 });
-document.addEventListener("mapLayerChange", () => {
+document.addEventListener("layerGroupAdd", (e) => {
+  refreshDataSource(e.detail);
+  updateURL();
+});
+document.addEventListener("pointLayerRemove", (e) => {
+  const dataSource = e.detail;
+  map.messageControl.hide();
+  dataSource.forgetHighlightedMarker();
   inspector.clearAll();
   inspector.forgetRememberedProperties();
-  currentDataSource().forgetHighlightedMarker();
-  if (map.belowMinZoomWithMarkers) {
-    inspector.showZoomInMessage();
-    if (currentDataSource().statsLayer) {
-      inspector.showStatsDiv();
-      inspector.updateStatsDiv(null, currentDataSource().name);
-    }
-  }
+  if (map.belowMinZoomWithMarkers) inspector.showZoomInMessage();
   tableGroup.clear();
+});
+document.addEventListener("pointLayerAdd", () => {
+  inspector.removeZoomInMessage();
+});
+document.addEventListener("statsLayerRemove", () => {
+  inspector.removeStatsDiv();
   graphArea.clear();
-  map.messageControl.hide();
-  refreshCurrentDataSource();
-  updateURL();
+});
+document.addEventListener("statsLayerAdd", (e) => {
+  const dataSource = e.detail;
+  inspector.showStatsDiv();
+  inspector.updateStatsDiv(null, dataSource.name);
 });
 
 // district polygon-related events
