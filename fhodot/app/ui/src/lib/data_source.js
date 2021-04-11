@@ -12,8 +12,6 @@ import { MarkerClusterGroup } from "leaflet.markercluster";
 
 import {
   createClusterIcon,
-  getDefaultCircleMarkerStyle,
-  getHighlightedCircleMarkerStyle,
   styleMarker,
 } from "./marker_styling";
 import { fetchAbortPrevious } from "./utils";
@@ -236,13 +234,7 @@ export default class DataSource {
 
     markers.on("click", (e) => {
       const clickedMarker = e.sourceTarget;
-
-      this.setSelectedFeatureID(clickedMarker.feature);
-      e.target.setStyle(getDefaultCircleMarkerStyle()); // all markers
-      clickedMarker.setStyle(getHighlightedCircleMarkerStyle());
-      this.pointLayer.refreshClusters(); // all clusters
-      clickedMarker.bringToFront(); // although not in front of clusters
-
+      this.selectFeatureFromMarker(clickedMarker);
       this.markerClickFunction(clickedMarker.feature.properties);
     });
 
@@ -297,23 +289,50 @@ export default class DataSource {
   }
 
   /**
-   * Set selectedFeatureID from feature
+   * Highlight marker representing feature and remember feature ID
    *
-   * This is used to remember the selected feature so its marker can be
-   * re-highlighted e.g. when the map is moved.
+   * The selected feature is remembered so that the marker that
+   * represents it can be re-highlighted e.g. when the map is moved.
    */
-  setSelectedFeatureID(feature) {
-    this.selectedFeatureID = this.getFeatureID(feature);
+  selectFeature(feature) {
+    const featureID = this.getFeatureID(feature);
+    const marker = this.pointLayer.getLayers().find((thisMarker) => (
+      this.getFeatureID(thisMarker.feature) === featureID
+    ));
+    this.selectFeatureFromMarker(marker);
   }
 
   /**
-   * Forget which marker was previously highlighted
+   * Highlight marker and remember its feature's ID
    *
-   * This avoids the marker being highlighted again e.g. when this data
-   * source is re-enabled after a map layer change.
+   * The selected feature is remembered so that the marker that
+   * represents it can be re-highlighted e.g. when the map is moved.
    */
-  forgetHighlightedMarker() {
-    this.selectedFeatureID = null;
+  selectFeatureFromMarker(marker) {
+    this.forgetSelectedFeature();
+    this.selectedFeatureID = this.getFeatureID(marker.feature);
+    marker.setStyle(styleMarker(marker.feature, this));
+    // array workaround: passing single marker doesn't work with CircleMarker
+    // https://github.com/Leaflet/Leaflet.markercluster/blob/v1.4.1/src/MarkerClusterGroup.Refresh.js#L19-L29
+    this.pointLayer.refreshClusters([marker]);
+    marker.bringToFront(); // although not in front of clusters
+  }
+
+  /**
+   * Un-highlight marker representing selected feature and forget its ID
+   */
+  forgetSelectedFeature() {
+    if (!this.selectedFeatureID) return;
+    const selectedMarker = this.pointLayer.getLayers().find((marker) => (
+      this.getFeatureID(marker.feature) === this.selectedFeatureID
+    ));
+    this.selectedFeatureID = null; // used by refreshClusters below
+    if (selectedMarker) {
+      selectedMarker.setStyle(styleMarker(selectedMarker.feature));
+      // array workaround: passing single marker doesn't work with CircleMarker
+      // https://github.com/Leaflet/Leaflet.markercluster/blob/v1.4.1/src/MarkerClusterGroup.Refresh.js#L19-L29
+      this.pointLayer.refreshClusters([selectedMarker]);
+    }
   }
 
   /**

@@ -75,20 +75,23 @@ export const getHighlightedCircleMarkerStyle = () => ({
 /**
  * Style a marker based on feature data
  */
-export const styleMarker = (feature, dataSource) => {
+export const styleMarker = (feature, dataSource = null) => {
   const {
     badFHRSIDsString,
     numMismatchedFHRSIDs,
     numMatchesDifferentPostcodes,
     numMatchesSamePostcodes,
   } = feature.properties;
-  const { selectedFeatureID, getFeatureID } = dataSource;
+  let styles;
 
-  // highlight marker if feature selected before map move
-  const styles = (selectedFeatureID
-                  && selectedFeatureID === getFeatureID(feature))
-    ? getHighlightedCircleMarkerStyle()
-    : getDefaultCircleMarkerStyle();
+  if (dataSource) {
+    const { selectedFeatureID, getFeatureID } = dataSource;
+    styles = (selectedFeatureID === getFeatureID(feature))
+      ? getHighlightedCircleMarkerStyle()
+      : getDefaultCircleMarkerStyle();
+  } else {
+    styles = getDefaultCircleMarkerStyle();
+  }
 
   // colour palette from hclwizard.org
   // qualitative, n: 3, h: 0-230, c: 100, l: 75
@@ -100,5 +103,6 @@ export const styleMarker = (feature, dataSource) => {
   } else {
     styles.fillColor = "rgb(0, 203, 255)";
   }
+
   return styles;
 };

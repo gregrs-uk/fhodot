@@ -114,7 +114,7 @@ document.addEventListener("layerGroupAdd", (e) => {
 document.addEventListener("pointLayerRemove", (e) => {
   const dataSource = e.detail;
   map.messageControl.hide();
-  dataSource.forgetHighlightedMarker();
+  dataSource.forgetSelectedFeature();
   inspector.clearAll();
   inspector.forgetRememberedProperties();
   if (map.belowMinZoomWithMarkers) inspector.showZoomInMessage();
@@ -164,25 +164,16 @@ document.addEventListener("keyup", (e) => {
   }
 });
 
-const selectFeature = (feature, dataSource) => {
-  dataSource.setSelectedFeatureID(feature);
-  dataSource.pointLayer.eachLayer((marker) => {
-    marker.setStyle(styleMarker(marker.feature, dataSource));
-    if (dataSource.getFeatureID(marker.feature)
-        === dataSource.selectedFeatureID) {
-      marker.bringToFront();
-    }
-  });
-  dataSource.pointLayer.refreshClusters();
-  dataSource.markerClickFunction(feature.properties);
-};
-
 // select feature and optionally zoom map
 document.addEventListener("requestSelect", (e) => {
-  selectFeature(e.detail, currentDataSource());
+  const feature = e.detail;
+  currentDataSource().selectFeature(feature);
+  currentDataSource().markerClickFunction(feature.properties);
 });
 document.addEventListener("requestSelectAndZoom", (e) => {
+  const feature = e.detail;
   const [lon, lat] = e.detail.geometry.coordinates;
-  selectFeature(e.detail, currentDataSource());
+  currentDataSource().selectFeature(feature);
+  currentDataSource().markerClickFunction(feature.properties);
   map.zoomTo(lat, lon);
 });
