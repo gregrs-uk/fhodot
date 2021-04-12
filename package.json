@@ -69,8 +69,7 @@
     }
   },
   "scripts": {
-    "build": "npm run clean && webpack --config webpack.prod.js",
-    "clean": "rm -rf fhodot/app/ui/dist/*",
+    "build": "webpack --config webpack.prod.js",
     "lint": "eslint *.js fhodot/app/ui/src/*.js fhodot/app/ui/src/lib/*.js",
     "stats": "webpack --json --config webpack.prod.js > stats.json",
     "test": "karma start",
