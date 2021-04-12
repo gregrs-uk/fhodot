@@ -289,6 +289,22 @@ export default class DataSource {
   }
 
   /**
+   * Return the marker for the provided feature ID
+   */
+  getMarkerForFeatureID(featureID) {
+    return this.pointLayer.getLayers().find((thisMarker) => (
+      this.getFeatureID(thisMarker.feature) === featureID
+    ));
+  }
+
+  /**
+   * Return marker representing the selected feature
+   */
+  get selectedMarker() {
+    return this.getMarkerForFeatureID(this.selectedFeatureID);
+  }
+
+  /**
    * Highlight marker representing feature and remember feature ID
    *
    * The selected feature is remembered so that the marker that
@@ -296,9 +312,7 @@ export default class DataSource {
    */
   selectFeature(feature) {
     const featureID = this.getFeatureID(feature);
-    const marker = this.pointLayer.getLayers().find((thisMarker) => (
-      this.getFeatureID(thisMarker.feature) === featureID
-    ));
+    const marker = this.getMarkerForFeatureID(featureID);
     this.selectFeatureFromMarker(marker);
   }
 
@@ -323,11 +337,9 @@ export default class DataSource {
    */
   forgetSelectedFeature() {
     if (!this.selectedFeatureID) return;
-    const selectedMarker = this.pointLayer.getLayers().find((marker) => (
-      this.getFeatureID(marker.feature) === this.selectedFeatureID
-    ));
+    const { selectedMarker } = this;
     this.selectedFeatureID = null; // used by refreshClusters below
-    if (selectedMarker) {
+    if (selectedMarker) { // if marker is within map view
       selectedMarker.setStyle(styleMarker(selectedMarker.feature));
       // array workaround: passing single marker doesn't work with CircleMarker
       // https://github.com/Leaflet/Leaflet.markercluster/blob/v1.4.1/src/MarkerClusterGroup.Refresh.js#L19-L29

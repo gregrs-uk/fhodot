@@ -146,12 +146,24 @@ document.addEventListener("districtClick", (e) => {
   graphArea.updateGraph(url);
 });
 
-// automatically switching layers when linking OSM/FHRS features
+// events related to linking OSM/FHRS features
 document.addEventListener("autoChooseLayer", () => {
   const newDataSource = (currentDataSource().type === "osm" ? "fhrs" : "osm");
   currentDataSource().removeLayerGroupFrom(map);
-  // this will also cause SlippyMap to fire mapLayerChange event on document
+  // this will also cause layerGroupAdd event on document
   dataCollection.getDataSourceByName(newDataSource).addLayerGroupTo(map);
+});
+document.addEventListener("clearRemembered", () => {
+  inspector.forgetRememberedProperties();
+  inspector.clearAll();
+  const dataSource = currentDataSource();
+  const { selectedMarker } = dataSource;
+  if (selectedMarker) { // if feature has marker on map
+    dataSource.markerClickFunction(selectedMarker.feature.properties);
+  } else {
+    // avoid selected feature outside map view with no details in inspector
+    dataSource.forgetSelectedFeature();
+  }
 });
 
 // switching layer by keyboard shortcut

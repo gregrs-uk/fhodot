@@ -306,9 +306,7 @@ export default class Inspector {
 
     this.rememberDiv.querySelector("p.clear")
       .addEventListener("click", () => {
-        this.forgetRememberedProperties();
-        this.rememberDiv.remove();
-        this.linkDiv.remove();
+        document.dispatchEvent(new Event("clearRemembered"));
       });
   }
 
