@@ -1,4 +1,5 @@
 \set ON_ERROR_STOP true
+SET client_min_messages TO WARNING;
 
 -- rename here rather than in mapping.yml because if there isn't a column
 -- called id, imposm will create an additional id column

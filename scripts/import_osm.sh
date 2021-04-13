@@ -10,7 +10,7 @@ database_name=gregrs_fhodot
 original_dir=`pwd`
 cd $osm_import_dir || exit 1
 
-$imposm_binary_dir/imposm import -config imposm_config.json \
+$imposm_binary_dir/imposm import -quiet -config imposm_config.json \
 	-read $data_file -overwritecache -write || exit 1
 
 psql -d $database_name -q -f $osm_import_dir/post_import.sql
