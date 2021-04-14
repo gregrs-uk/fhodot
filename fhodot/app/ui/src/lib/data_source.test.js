@@ -37,33 +37,6 @@ describe("DataSource", () => {
       it("is a LayerGroup", () => {
         expect(dataSource.layerGroup).to.be.an.instanceOf(LayerGroup);
       });
-
-      it("contains only pointLayer by default", () => {
-        expect(dataSource.layerGroup.getLayers())
-          .to.be.an("array").of.length(1);
-        expect(dataSource.layerGroup.hasLayer(dataSource.pointLayer));
-      });
-
-      it("contains lineLayer if defined", () => {
-        dataSource = new DataSource({
-          type: "osm",
-          lineLayer: new FeatureGroup(),
-        });
-        expect(dataSource.layerGroup.getLayers())
-          .to.be.an("array").of.length(2);
-        expect(dataSource.layerGroup.hasLayer(dataSource.lineLayer));
-      });
-
-      it("contains statsLayer LayerGroup if statsJSONURL given", () => {
-        dataSource = new DataSource({
-          type: "osm",
-          statsJSONURL: "example",
-        });
-        expect(dataSource.statsLayer).to.be.an.instanceOf(LayerGroup);
-        expect(dataSource.layerGroup.getLayers())
-          .to.be.an("array").of.length(2);
-        expect(dataSource.layerGroup.hasLayer(dataSource.statsLayer));
-      });
     });
   });
 
@@ -142,11 +115,13 @@ describe("DataSource", () => {
       fetchStub.resetHistory(); // forget calls but not behaviour
     });
 
-    it("clears markers at low zoom, leaving layer enabled", () => {
+    it("clears pointLayer at low zoom", () => {
       map.leafletMap.setZoom(map.minZoomWithMarkers - 1, { animate: false });
       dataSource.refresh(map);
-      expect(dataSource.pointLayer.getLayers()).to.be.empty;
       expect(dataSource.isEnabled(map)).to.equal(true);
+      expect(dataSource.layerGroup.hasLayer(dataSource.pointLayer))
+        .to.be.false;
+      expect(map.leafletMap.hasLayer(dataSource.pointLayer)).to.be.false;
       expect(fetchStub).not.to.have.been.called;
     });
 
