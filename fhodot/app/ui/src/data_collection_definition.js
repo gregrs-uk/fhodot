@@ -7,7 +7,10 @@ import { LayerGroup } from "leaflet";
 import DataSource from "./lib/data_source";
 import DataCollection from "./lib/data_collection";
 import {
-  mismatchesTable, osmPostcodeDifferencesTable, fhrsPostcodeDifferencesTable,
+  mismatchesTable,
+  osmPostcodeDifferencesTable,
+  fhrsNoLocationTable,
+  fhrsPostcodeDifferencesTable,
 } from "./table_definitions";
 
 // define data sources, layers and associated functions
@@ -19,7 +22,7 @@ const getDataCollection = (inspector) => new DataCollection([
     jsonURL: `api/fhrs`,
     statsJSONURL: `api/stats_fhrs`,
     markerClickFunction: (data) => inspector.updateFHRS(data),
-    tables: [fhrsPostcodeDifferencesTable],
+    tables: [fhrsPostcodeDifferencesTable, fhrsNoLocationTable],
     keyboardShortcut: "f",
   }),
   new DataSource({

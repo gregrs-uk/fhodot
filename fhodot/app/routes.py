@@ -5,11 +5,12 @@ from io import StringIO
 from logging import error
 
 from flask import abort, make_response, request
-from geojson import dumps, FeatureCollection
+from geojson import dumps, Feature, FeatureCollection
 from sqlalchemy.orm import joinedload, undefer
 
 from fhodot.app import app, limiter
-from fhodot.app.fhrs import get_selected_fhrs_properties, get_osm_mappings
+from fhodot.app.fhrs import (get_selected_fhrs_properties, get_osm_mappings,
+                             query_fhrs_without_location_for_districts_in_bbox)
 from fhodot.app.osm import get_selected_osm_properties, get_fhrs_mappings
 from fhodot.app.parse_addresses import parse_establishment_address
 from fhodot.app.stats import get_fhrs_stats_features, get_osm_stats_features
@@ -17,8 +18,9 @@ from fhodot.app.suggest import (get_suggested_matches_by_osm_id,
                                 get_full_osm_objects_query,
                                 get_full_fhrs_establishments_dict)
 from fhodot.app.utils import (
-    num_objects_within_limit, get_bbox, get_geojson_line, get_geojson_point,
-    get_geojson_feature_collection_string, query_within_bbox)
+    get_bbox, get_geojson_line, get_geojson_point,
+    get_geojson_feature_collection_string, num_objects_within_limit,
+    query_within_bbox)
 from fhodot.database import Session
 from fhodot.models import FHRSEstablishment, OSMFHRSMapping, OSMObject
 
@@ -78,8 +80,18 @@ def data_fhrs():
         properties = get_selected_fhrs_properties(est)
         properties["osmMappings"] = get_osm_mappings(est,
                                                      include_distance=True)
-        features.append(
-            get_geojson_point(est.lat, est.lon, properties))
+        features.append(get_geojson_point(est.lat, est.lon, properties))
+
+    establishments_without_location = (
+        query_fhrs_without_location_for_districts_in_bbox(bbox).\
+        options(joinedload("osm_mappings").joinedload("osm_object"),
+                joinedload("authority")))
+
+    for est in establishments_without_location:
+        properties = get_selected_fhrs_properties(est)
+        properties["osmMappings"] = get_osm_mappings(est)
+        properties["authorityName"] = est.authority.name
+        features.append(Feature(properties=properties))
 
     return get_geojson_feature_collection_string(features)
 

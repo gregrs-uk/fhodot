@@ -184,8 +184,11 @@ document.addEventListener("requestSelect", (e) => {
 });
 document.addEventListener("requestSelectAndZoom", (e) => {
   const feature = e.detail;
-  const [lon, lat] = e.detail.geometry.coordinates;
+  const [lon, lat] = feature.geometry.coordinates;
   currentDataSource().selectFeature(feature);
   currentDataSource().markerClickFunction(feature.properties);
   map.zoomTo(lat, lon);
+});
+document.addEventListener("requestInspectorUpdateFHRS", (e) => {
+  currentDataSource().markerClickFunction(e.detail.properties);
 });

@@ -10,6 +10,8 @@
  * a property for each column in the definition.
  */
 
+import { getValueOrPlaceholder } from "./utils";
+
 export default class Table {
   constructor(arg) {
     if (!(arg instanceof Object)) {
@@ -76,8 +78,8 @@ export default class Table {
     features.forEach((feature) => {
       const row = tableBody.insertRow();
       this.definition.forEach((field) => {
-        if (typeof feature[field] === "string") {
-          row.insertCell().innerHTML = feature[field];
+        if (typeof feature[field] === "string" || feature[field] === null) {
+          row.insertCell().innerHTML = getValueOrPlaceholder(feature[field]);
         } else if (feature[field] instanceof HTMLElement
                    && feature[field].nodeName === "TD") {
           row.append(feature[field]);

@@ -6,6 +6,7 @@ import Table from "./lib/table";
 import TableGroup from "./lib/table_group";
 import {
   createElementWith,
+  getFeatureStatus,
   getValueOrPlaceholder,
   getFSAURL,
   getOSMURL,
@@ -229,4 +230,60 @@ export const fhrsPostcodeDifferencesTable = new Table({
     });
     return results;
   },
+});
+
+/**
+ * Return details of FHRS establishment without location
+ */
+const getFHRSNoLocationRow = (feature) => {
+  const {
+    fhrsID, name, postcode, authorityName,
+  } = feature.properties;
+
+  const nameLink = getLink(getValueOrPlaceholder(name), getFSAURL(fhrsID));
+  const nameCell = createElementWith("td", nameLink);
+  nameCell.className = getFeatureStatus(feature);
+
+  const showInfoSpan = createElementWith("span", "Show info", "action");
+  showInfoSpan.addEventListener("click", () => {
+    const event = new CustomEvent("requestInspectorUpdateFHRS", {
+      detail: feature,
+    });
+    document.dispatchEvent(event);
+  });
+  const showInfoCell = document.createElement("td");
+  showInfoCell.append(showInfoSpan);
+
+  return {
+    name: nameCell,
+    postcode,
+    authorityName,
+    showInfoCell,
+  };
+};
+
+/**
+ * Table of FHRS establishments without location
+ */
+export const fhrsNoLocationTable = new Table({
+  tableGroup,
+  elementID: "no-location",
+  heading: "FHRS establishments without location",
+  preTableMsg: `The following establishments have no location in the FHRS data
+    but are associated with an FHRS authority whose local authority district
+    is currently visible on the map.`,
+  emptyTableMsg: `No FHRS establishments without a location for any FHRS
+    authorities whose local authority district is currently visible on the
+    map.`,
+  definition: new Map([
+    ["FHRS establishment name", "name"],
+    ["FHRS postcode", "postcode"],
+    ["FHRS authority", "authorityName"],
+    ["Show info above", "showInfoCell"],
+  ]),
+  getProperties: (data) => (
+    data.features
+      .filter((feature) => feature.geometry === null)
+      .map(getFHRSNoLocationRow)
+  ),
 });
