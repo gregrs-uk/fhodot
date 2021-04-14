@@ -97,15 +97,11 @@ export const mismatchesTable = new Table({
     ["Edit", "editActions"],
     ["On map above", "mapActions"],
   ]),
-  getProperties: (data) => {
-    const results = [];
-    data.features.forEach((feature) => {
-      if (feature.properties.numMismatchedFHRSIDs) {
-        results.push(getMismatchRow(feature));
-      }
-    });
-    return results;
-  },
+  getProperties: (data) => (
+    data.features
+      .filter((feature) => feature.properties.numMismatchedFHRSIDs)
+      .map(getMismatchRow)
+  ),
 });
 
 /**
