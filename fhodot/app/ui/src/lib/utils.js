@@ -157,3 +157,20 @@ export const fetchAbortPrevious = (url) => {
       throw new Error(message);
     });
 };
+
+/**
+ * Return the matching status of an OSM or FHRS feature
+ */
+export const getFeatureStatus = (feature) => {
+  const {
+    badFHRSIDsString,
+    numMismatchedFHRSIDs,
+    numMatchesDifferentPostcodes,
+    numMatchesSamePostcodes,
+  } = feature.properties;
+
+  if (badFHRSIDsString || numMismatchedFHRSIDs > 0
+      || numMatchesDifferentPostcodes > 0) return "bad";
+  if (numMatchesSamePostcodes > 0) return "matched";
+  return "unmatched";
+};

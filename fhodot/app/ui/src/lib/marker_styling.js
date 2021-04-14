@@ -4,6 +4,8 @@
 
 import { divIcon, point } from "leaflet";
 
+import { getFeatureStatus } from "./utils";
+
 /**
  * Create appropriate divIcon for a cluster
  *
@@ -13,31 +15,23 @@ import { divIcon, point } from "leaflet";
  * contains selected feature, also use 'selected' CSS class.
  */
 export const createClusterIcon = (cluster, dataSource) => {
+  const childMarkers = cluster.getAllChildMarkers();
+
   let clusterClassAddOn = "matched";
-  let clusterContainsSelectedFeature = false;
-
-  cluster.getAllChildMarkers().forEach((childMarker) => {
-    const {
-      badFHRSIDsString,
-      numMismatchedFHRSIDs,
-      numMatchesDifferentPostcodes,
-      numMatchesSamePostcodes,
-    } = childMarker.feature.properties;
-    const { selectedFeatureID, getFeatureID } = dataSource;
-
-    if (selectedFeatureID === getFeatureID(childMarker.feature)) {
-      clusterContainsSelectedFeature = true;
-    }
-
-    if (badFHRSIDsString || numMismatchedFHRSIDs > 0
-        || numMatchesDifferentPostcodes > 0) {
+  childMarkers.some((marker) => {
+    const status = getFeatureStatus(marker.feature);
+    if (status === "bad") {
       clusterClassAddOn = "bad";
-    } else if (numMatchesSamePostcodes === 0 && clusterClassAddOn !== "bad") {
-      clusterClassAddOn = "unmatched";
+      return true; // stop iterating
     }
+    if (status === "unmatched") clusterClassAddOn = "unmatched";
+    return false; // continue iterating
   });
 
-  if (clusterContainsSelectedFeature) clusterClassAddOn += " selected";
+  const { selectedFeatureID, getFeatureID } = dataSource;
+  if (selectedFeatureID && childMarkers.find((childMarker) => (
+    selectedFeatureID === getFeatureID(childMarker.feature)
+  ))) clusterClassAddOn += " selected";
 
   return divIcon({
     html: "<div><span>+</span></div>",
@@ -76,12 +70,6 @@ export const getHighlightedCircleMarkerStyle = () => ({
  * Style a marker based on feature data
  */
 export const styleMarker = (feature, dataSource = null) => {
-  const {
-    badFHRSIDsString,
-    numMismatchedFHRSIDs,
-    numMatchesDifferentPostcodes,
-    numMatchesSamePostcodes,
-  } = feature.properties;
   let styles;
 
   if (dataSource) {
@@ -95,14 +83,12 @@ export const styleMarker = (feature, dataSource = null) => {
 
   // colour palette from hclwizard.org
   // qualitative, n: 3, h: 0-230, c: 100, l: 75
-  if (badFHRSIDsString || numMismatchedFHRSIDs > 0
-      || numMatchesDifferentPostcodes > 0) {
-    styles.fillColor = "rgb(255, 137, 172)";
-  } else if (numMatchesSamePostcodes > 0) {
-    styles.fillColor = "rgb(122, 206, 0)";
-  } else {
-    styles.fillColor = "rgb(0, 203, 255)";
-  }
+  const colours = {
+    bad: "rgb(255, 137, 172)",
+    matched: "rgb(122, 206, 0)",
+    unmatched: "rgb(0, 203, 255)",
+  };
+  styles.fillColor = colours[getFeatureStatus(feature)];
 
   return styles;
 };
