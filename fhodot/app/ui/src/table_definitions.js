@@ -233,6 +233,49 @@ export const fhrsPostcodeDifferencesTable = new Table({
 });
 
 /**
+ * Return details of unmatched FHRS establishment
+ */
+const getFHRSUnmatchedRow = (feature) => {
+  const row = feature.properties;
+
+  const { fhrsID, name } = row;
+  const nameLink = getLink(getValueOrPlaceholder(name), getFSAURL(fhrsID));
+  row.nameCell = createElementWith("td", nameLink);
+  row.nameCell.className = getFeatureStatus(feature);
+
+  row.mapActions = getMapActionsCell(feature);
+
+  return row;
+};
+
+/**
+ * Table of unmatched FHRS establishments
+ */
+export const fhrsUnmatchedTable = new Table({
+  tableGroup,
+  elementID: "unmatched",
+  heading: "Unmatched FHRS establishments with a location",
+  preTableMsg: `The following FHRS establishments with a location have
+    not been matched to an OSM object using the <code>fhrs:id</code>
+    tag.`,
+  emptyTableMsg: "No unmatched FHRS establishments found on map",
+  definition: new Map([
+    ["FHRS establishment name", "nameCell"],
+    ["FHRS postcode", "postcode"],
+    ["On map above", "mapActions"],
+  ]),
+  getProperties: (data) => (
+    data.features.filter((feature) => {
+      const {
+        numMatchesSamePostcodes, numMatchesDifferentPostcodes,
+      } = feature.properties;
+      const matches = numMatchesSamePostcodes + numMatchesDifferentPostcodes;
+      return feature.geometry && matches === 0;
+    }).map(getFHRSUnmatchedRow)
+  ),
+});
+
+/**
  * Return details of FHRS establishment without location
  */
 const getFHRSNoLocationRow = (feature) => {

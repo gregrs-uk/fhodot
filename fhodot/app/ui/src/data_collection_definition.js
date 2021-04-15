@@ -11,6 +11,7 @@ import {
   osmPostcodeDifferencesTable,
   fhrsNoLocationTable,
   fhrsPostcodeDifferencesTable,
+  fhrsUnmatchedTable,
 } from "./table_definitions";
 
 // define data sources, layers and associated functions
@@ -22,7 +23,9 @@ const getDataCollection = (inspector) => new DataCollection([
     jsonURL: `api/fhrs`,
     statsJSONURL: `api/stats_fhrs`,
     markerClickFunction: (data) => inspector.updateFHRS(data),
-    tables: [fhrsPostcodeDifferencesTable, fhrsNoLocationTable],
+    tables: [
+      fhrsPostcodeDifferencesTable, fhrsUnmatchedTable, fhrsNoLocationTable,
+    ],
     keyboardShortcut: "f",
   }),
   new DataSource({
