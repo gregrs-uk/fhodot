@@ -89,6 +89,11 @@ def data_fhrs():
 
     for est in establishments_without_location:
         properties = get_selected_fhrs_properties(est)
+        if not est.location:
+            properties["address1"] = est.address_1
+            properties["address2"] = est.address_2
+            properties["address3"] = est.address_3
+            properties["address4"] = est.address_4
         properties["osmMappings"] = get_osm_mappings(est)
         properties["authorityName"] = est.authority.name
         features.append(Feature(properties=properties))

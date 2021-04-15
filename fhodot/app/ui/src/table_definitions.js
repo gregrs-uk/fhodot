@@ -236,13 +236,16 @@ export const fhrsPostcodeDifferencesTable = new Table({
  * Return details of FHRS establishment without location
  */
 const getFHRSNoLocationRow = (feature) => {
-  const {
-    fhrsID, name, postcode, authorityName,
-  } = feature.properties;
+  const row = feature.properties;
 
+  const { fhrsID, name } = row;
   const nameLink = getLink(getValueOrPlaceholder(name), getFSAURL(fhrsID));
-  const nameCell = createElementWith("td", nameLink);
-  nameCell.className = getFeatureStatus(feature);
+  row.nameCell = createElementWith("td", nameLink);
+  row.nameCell.className = getFeatureStatus(feature);
+
+  row.address = [row.address1, row.address2, row.address3, row.address4]
+    .filter((line) => line)
+    .join(", ");
 
   const showInfoSpan = createElementWith("span", "Show info", "action");
   showInfoSpan.addEventListener("click", () => {
@@ -251,15 +254,10 @@ const getFHRSNoLocationRow = (feature) => {
     });
     document.dispatchEvent(event);
   });
-  const showInfoCell = document.createElement("td");
-  showInfoCell.append(showInfoSpan);
+  row.showInfoCell = document.createElement("td");
+  row.showInfoCell.append(showInfoSpan);
 
-  return {
-    name: nameCell,
-    postcode,
-    authorityName,
-    showInfoCell,
-  };
+  return row;
 };
 
 /**
@@ -276,7 +274,8 @@ export const fhrsNoLocationTable = new Table({
     authorities whose local authority district is currently visible on the
     map.`,
   definition: new Map([
-    ["FHRS establishment name", "name"],
+    ["FHRS establishment name", "nameCell"],
+    ["FHRS address", "address"],
     ["FHRS postcode", "postcode"],
     ["FHRS authority", "authorityName"],
     ["Show info above", "showInfoCell"],
