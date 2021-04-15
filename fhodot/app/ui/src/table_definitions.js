@@ -64,7 +64,7 @@ const getMapActionsCell = (feature) => {
  */
 const getMismatchRow = (feature) => {
   const {
-    osmType, osmIDByType, fhrsMappings, name,
+    osmType, osmIDByType, name, fhrsMappings, postcode,
   } = feature.properties;
 
   return {
@@ -75,6 +75,7 @@ const getMismatchRow = (feature) => {
       // true if FHRS ID doesn't match an establishment
       (fhrsMapping) => !("fhrsEstablishment" in fhrsMapping),
     ).map((fhrsMapping) => fhrsMapping.fhrsID).join(", "),
+    postcode,
     editActions: getEditActionsCell(osmType, osmIDByType),
     mapActions: getMapActionsCell(feature),
   };
@@ -95,6 +96,7 @@ export const mismatchesTable = new Table({
   definition: new Map([
     ["OSM <code>name</code>", "name"],
     ["Incorrect FHRS ID(s)", "fhrsIDs"],
+    ["OSM <code>addr:postcode</code>", "postcode"],
     ["Edit", "editActions"],
     ["On map above", "mapActions"],
   ]),

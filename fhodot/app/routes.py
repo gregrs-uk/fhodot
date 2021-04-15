@@ -110,6 +110,7 @@ def data_osm():
     if not num_objects_within_limit(OSMObject, bbox, 10000):
         abort(413)
     osm_objects = query_within_bbox(OSMObject, bbox).\
+        order_by(OSMObject.addr_postcode, OSMObject.name).\
         options(joinedload("fhrs_mappings").joinedload("fhrs_establishment"),
                 undefer("fhrs_mappings.distance"))
 
