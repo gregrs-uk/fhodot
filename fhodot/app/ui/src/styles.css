@@ -251,6 +251,7 @@ thead tr, tbody tr:nth-child(even) {
   background-color: rgb(240, 240, 240);
 }
 th, td {
+  max-width: 300px;
   text-align: left;
   padding: 0.4em;
 }
