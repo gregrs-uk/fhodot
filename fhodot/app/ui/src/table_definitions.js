@@ -278,6 +278,60 @@ export const fhrsUnmatchedTable = new Table({
 });
 
 /**
+ * Return details of unmatched OSM object
+ */
+const getOSMUnmatchedRow = (feature) => {
+  const {
+    osmType, osmIDByType, name, postcode,
+  } = feature.properties;
+
+  const nameLink = getLink(
+    getValueOrPlaceholder(name), getOSMURL(osmType, osmIDByType),
+  );
+  const nameCell = createElementWith("td", nameLink);
+  nameCell.className = getFeatureStatus(feature);
+
+  return {
+    nameCell,
+    postcode,
+    editActions: getEditActionsCell(osmType, osmIDByType),
+    mapActions: getMapActionsCell(feature),
+  };
+};
+
+/**
+ * Table of unmatched FHRS establishments
+ */
+export const osmUnmatchedTable = new Table({
+  tableGroup,
+  elementID: "unmatched",
+  heading: "Unmatched OSM objects",
+  preTableMsg: `The following OSM objects have not been successfully
+    matched to an FHRS establishment using a valid <code>fhrs:id</code>.
+    Objects with neither a name nor postcode are not shown in this table,
+    but are shown on the map above.`,
+  emptyTableMsg: "No unmatched OSM objects found on map",
+  definition: new Map([
+    ["OSM object name", "nameCell"],
+    ["OSM <code>addr:postcode</code>", "postcode"],
+    ["Edit", "editActions"],
+    ["On map above", "mapActions"],
+  ]),
+  getProperties: (data) => (
+    data.features.filter((feature) => {
+      const {
+        name, numMatchesSamePostcodes, numMatchesDifferentPostcodes, postcode,
+      } = feature.properties;
+      const unmatched = (
+        numMatchesSamePostcodes + numMatchesDifferentPostcodes === 0
+      );
+      const containsNameOrPostcode = name || postcode;
+      return unmatched && containsNameOrPostcode;
+    }).map(getOSMUnmatchedRow)
+  ),
+});
+
+/**
  * Return details of FHRS establishment without location
  */
 const getFHRSNoLocationRow = (feature) => {

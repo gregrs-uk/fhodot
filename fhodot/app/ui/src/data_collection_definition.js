@@ -7,11 +7,12 @@ import { LayerGroup } from "leaflet";
 import DataSource from "./lib/data_source";
 import DataCollection from "./lib/data_collection";
 import {
-  mismatchesTable,
-  osmPostcodeDifferencesTable,
   fhrsNoLocationTable,
   fhrsPostcodeDifferencesTable,
   fhrsUnmatchedTable,
+  mismatchesTable,
+  osmPostcodeDifferencesTable,
+  osmUnmatchedTable,
 } from "./table_definitions";
 
 // define data sources, layers and associated functions
@@ -35,7 +36,7 @@ const getDataCollection = (inspector) => new DataCollection([
     jsonURL: `api/osm`,
     statsJSONURL: `api/stats_osm`,
     markerClickFunction: (data) => inspector.updateOSM(data, false),
-    tables: [mismatchesTable, osmPostcodeDifferencesTable],
+    tables: [mismatchesTable, osmPostcodeDifferencesTable, osmUnmatchedTable],
     keyboardShortcut: "o",
   }),
   new DataSource({

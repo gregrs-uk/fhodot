@@ -255,13 +255,13 @@ th, td {
   text-align: left;
   padding: 0.4em;
 }
-#no-location td.bad {
+td.bad {
   background-color: rgba(255, 137, 172, 0.1);
 }
-#no-location td.matched {
+td.matched {
   background-color: rgba(122, 206, 0, 0.1);
 }
-#no-location td.unmatched {
+td.unmatched {
   background-color: rgba(0, 203, 255, 0.1);
 }
 
