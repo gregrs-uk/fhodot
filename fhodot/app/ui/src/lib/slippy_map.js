@@ -32,8 +32,8 @@ export default class SlippyMap {
       <a href='https://www.food.gov.uk/crown-copyright' target='_blank'>
       food hygiene rating data</a> and
       <a href='https://www.ons.gov.uk/methodology/geography/licences'
-      target='_blank'>OS data</a> &copy; Crown copyright and database right
-      </a>.`;
+      target='_blank'>OS data</a> &copy; Crown copyright and database
+      right</a>.`;
 
     tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution,
