@@ -23,8 +23,8 @@ tables:
         club: [scouts, social, sport]
         craft: [brewery, caterer, confectionery   , distillery, winery]
         shop: [alcohol, bakery, butcher, cheese, chemist, confectionery,
-          convenience, deli, delicatessen, discount, farm, fishmonger,
-          greengrocer, grocery, health_food, newsagent, pastry, seafood,
+          convenience, deli, delicatessen, discount, doityourself, farm, fishmonger,
+          greengrocer, grocery, health_food, herbalist, newsagent, pastry, seafood,
           supermarket, variety_store]
         tourism: [hotel, guest_house]
         "fhrs:id": [__any__]
@@ -39,8 +39,8 @@ tables:
         club: [scouts, social, sport]
         craft: [brewery, caterer, confectionery   , distillery, winery]
         shop: [alcohol, bakery, butcher, cheese, chemist, confectionery,
-          convenience, deli, delicatessen, discount, farm, fishmonger,
-          greengrocer, grocery, health_food, newsagent, pastry, seafood,
+          convenience, deli, delicatessen, discount, doityourself, farm, fishmonger,
+          greengrocer, grocery, health_food, herbalist, newsagent, pastry, seafood,
           supermarket, variety_store]
         tourism: [hotel, guest_house]
         "fhrs:id": [__any__]
