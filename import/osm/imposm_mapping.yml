@@ -15,34 +15,36 @@ tables:
 
       # same as polygons below
       points:
-        amenity: [bar, cafe, care_home, childcare, church_hall, cinema,
-          college, community_centre, community_hall, fast_food, fuel, hospital,
-          ice_cream, kindergarten, nightclub, nursing_home, pharmacy,
-          place_of_worship, post_office, pub, restaurant, school, social_club,
-          social_facility, theatre, village_hall]
-        club: [scouts, social, sport]
-        craft: [brewery, caterer, confectionery   , distillery, winery]
+        amenity: [bar, cafe, casino, childcare, cinema, events_venue,
+          fast_food, gambling, hookah_lounge, ice_cream, kindergarten,
+          nightclub, nursing_home, pub, restaurant, school, social_club,
+          social_facility, village_hall]
+        club: [social, freemasonry]
+        craft: [caterer, confectionery, distillery, winery]
+        leisure: [bowling_alley, indoor_play, social_club]
         shop: [alcohol, bakery, butcher, cheese, chemist, confectionery,
-          convenience, deli, delicatessen, discount, farm, fishmonger,
-          greengrocer, grocery, health_food, newsagent, pastry, seafood,
-          supermarket, variety_store]
-        tourism: [hotel, guest_house]
+          convenience, deli, delicatessen, department_store, discount, farm,
+          fishmonger, food, frozen_food, greengrocer, grocery, health_food,
+          herbalist, ice_cream, newsagent, pastry, seafood, supermarket, tea,
+          variety_store, wine]
+        tourism: [hostel, hotel, guest_house]
         "fhrs:id": [__any__]
 
       # same as points above
       polygons:
-        amenity: [bar, cafe, care_home, childcare, church_hall, cinema,
-          college, community_centre, community_hall, fast_food, fuel, hospital,
-          ice_cream, kindergarten, nightclub, nursing_home, pharmacy,
-          place_of_worship, post_office, pub, restaurant, school, social_club,
-          social_facility, theatre, village_hall]
-        club: [scouts, social, sport]
-        craft: [brewery, caterer, confectionery   , distillery, winery]
+        amenity: [bar, cafe, casino, childcare, cinema, events_venue,
+          fast_food, gambling, hookah_lounge, ice_cream, kindergarten,
+          nightclub, nursing_home, pub, restaurant, school, social_club,
+          social_facility, village_hall]
+        club: [social, freemasonry]
+        craft: [caterer, confectionery, distillery, winery]
+        leisure: [bowling_alley, indoor_play, social_club]
         shop: [alcohol, bakery, butcher, cheese, chemist, confectionery,
-          convenience, deli, delicatessen, discount, farm, fishmonger,
-          greengrocer, grocery, health_food, newsagent, pastry, seafood,
-          supermarket, variety_store]
-        tourism: [hotel, guest_house]
+          convenience, deli, delicatessen, department_store, discount, farm,
+          fishmonger, food, frozen_food, greengrocer, grocery, health_food,
+          herbalist, ice_cream, newsagent, pastry, seafood, supermarket, tea,
+          variety_store, wine]
+        tourism: [hostel, hotel, guest_house]
         "fhrs:id": [__any__]
 
     # columns should also be defined in the SQLAlchemy database models
