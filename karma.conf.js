@@ -1,4 +1,5 @@
 const path = require("path");
+const isDocker = require("is-docker");
 
 module.exports = (config) => {
   config.set({
@@ -36,6 +37,13 @@ module.exports = (config) => {
       },
     },
 
+    customLaunchers: {
+      ChromiumHeadlessCustom: {
+        base: "ChromiumHeadless",
+        flags: isDocker() ? ["--no-sandbox"] : [],
+      }
+    },
+
     reporters: ["progress", "coverage"],
 
     coverageReporter: {
@@ -47,7 +55,7 @@ module.exports = (config) => {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ["ChromeHeadless"],
+    browsers: ["ChromiumHeadlessCustom"],
     singleRun: true,
     concurrency: Infinity,
   });

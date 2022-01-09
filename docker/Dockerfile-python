@@ -1,0 +1,19 @@
+# syntax=docker/dockerfile:1
+
+FROM python:3.8.10-buster
+
+WORKDIR /fhodot
+
+# needed for Fiona Python package
+RUN apt-get update && apt-get install -y libgdal-dev
+RUN pip3 install --upgrade pip
+
+COPY requirements.txt requirements.txt
+RUN pip3 install -r requirements.txt
+
+ENV FLASK_APP=fhodot/app/__init__.py
+ENV FLASK_ENV=development
+
+# not copying source files: create bind mount when running
+
+CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]

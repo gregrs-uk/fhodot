@@ -1,0 +1,12 @@
+# syntax=docker/dockerfile:1
+FROM golang:1.17.6
+RUN apt-get update && apt-get install -y libleveldb-dev libgeos-dev
+WORKDIR /go
+RUN go get github.com/omniscale/imposm3
+RUN go install github.com/omniscale/imposm3/cmd/imposm@v0.11.1
+
+FROM debian:11.2-slim
+RUN apt-get update && apt-get install -y libleveldb-dev libgeos-dev postgresql-client
+COPY --from=0 /go/bin/imposm /imposm/imposm
+WORKDIR /fhodot
+CMD ["scripts/import_osm.sh"]

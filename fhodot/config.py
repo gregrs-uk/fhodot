@@ -2,6 +2,13 @@
 
 from logging import CRITICAL, ERROR, WARNING, INFO, DEBUG # pylint: disable=unused-import
 
-DATABASE_URL = "postgresql+psycopg2:///gregrs_fhodot"
+# using Docker
+DATABASE_URL = "postgresql://postgres:db@db:5432/gregrs_fhodot"
+REDIS_URL = "redis://redis:6379"
+
+# or running locally without Docker
+#DATABASE_URL = "postgresql+psycopg2:///gregrs_fhodot"
+#REDIS_URL = "redis://localhost:6379"
+
 USER_AGENT = "https://github.com/gregrs-uk/fhodot"
 LOG_LEVEL = DEBUG

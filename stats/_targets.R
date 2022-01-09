@@ -2,15 +2,28 @@ library(targets)
 library(tarchetypes)
 
 source("R/functions.R")
-con <- DBI::dbConnect(RPostgres::Postgres(), "gregrs_fhodot")
+con <- DBI::dbConnect(
+  RPostgres::Postgres(),
+  dbname = "gregrs_fhodot",
+  host = "db",
+  user = "postgres",
+  password = "db"
+)
 
-options(tidyverse.quiet = TRUE)
 tar_option_set(
   packages = c(
     "colorspace",
+    "dbplyr",
+    "dplyr",
+    "forcats",
+    "ggplot2",
     "glue",
     "lubridate",
-    "tidyverse"
+    "purrr",
+    "readr",
+    "stringr",
+    "tibble",
+    "tidyr"
   )
 )
 

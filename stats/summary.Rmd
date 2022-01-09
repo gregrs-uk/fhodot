@@ -7,10 +7,13 @@ output: html_document
 knitr::opts_chunk$set(echo = FALSE)
 
 library(colorspace)
+library(dplyr)
+library(forcats)
+library(ggplot2)
 library(lubridate)
 library(scales)
 library(targets)
-library(tidyverse)
+library(tidyr)
 
 source("R/functions.R")
 

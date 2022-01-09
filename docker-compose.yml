@@ -1,0 +1,50 @@
+version: "3.8"
+
+services:
+  python:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile-python
+    ports:
+      - 5000:5000
+    volumes:
+      - .:/fhodot
+    depends_on:
+      - postgis
+      - redis
+  postgis:
+    image: postgis/postgis:14-3.2
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: db
+      POSTGRES_DB: gregrs_fhodot
+  redis:
+    image: redis:5.0.7
+  imposm:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile-imposm
+    volumes:
+      - .:/fhodot
+    depends_on:
+      - postgis
+  node:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile-node
+    volumes:
+      - .:/fhodot
+    working_dir: /fhodot
+    command: npm run watch
+  rstats:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile-rstats
+    volumes:
+      - .:/fhodot
+    depends_on:
+      - postgis
+
+volumes:
+  db-data:

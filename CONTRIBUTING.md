@@ -18,31 +18,39 @@ With the exception of importing OpenStreetMap data and producing statistics/grap
 * Object Relational Mapper: [SQLAlchemy](https://docs.sqlalchemy.org/) (with [GeoAlchemy2](https://geoalchemy-2.readthedocs.io/))
 * Web framework: [Flask](https://flask.palletsprojects.com/)
 * Storage for rate limiting: [Redis](https://redis.io/)
-* Unit testing: [unittest](https://docs.python.org/3/library/unittest.html)
 * Statistics: written in [R](https://www.r-project.org) using [tidyverse](https://www.tidyverse.org/) packages
 
 ### Client-side
 
 The frontend is written in JavaScript (ES6).
 
-* [Node.js](https://nodejs.org/)
-* Bundler: [Webpack](https://webpack.js.org/)
 * Mapping: [Leaflet](https://leafletjs.com/)
-* Unit testing: [Mocha](https://mochajs.org), [Chai](https://www.chaijs.com), [Karma](http://karma-runner.github.io) with [Headless Chrome](https://developers.google.com/web/updates/2017/04/headless-chrome)
+
+### Development
+
+#### Python
+
+* Unit testing: [unittest](https://docs.python.org/3/library/unittest.html)
+
+#### JavaScript
+
+* [Node.js](https://nodejs.org/)
+* Unit testing: [Mocha](https://mochajs.org), [Chai](https://www.chaijs.com), [Karma](http://karma-runner.github.io) with Headless Chromium
+* Bundler: [Webpack](https://webpack.js.org/)
 
 
 ## Coding style
 
 ### Python
 
-* Please follow [PEP 8](https://www.python.org/dev/peps/pep-0008/) and use pylint to check your code e.g. using the helper script `run_pylint.sh`
+* Please follow [PEP 8](https://www.python.org/dev/peps/pep-0008/) and use pylint to check your code e.g. using `docker-compose run python scripts/run_pylint.sh`
 * Please use double quotes (") for strings
 * Feel free to break up sections of code with a blank line
 * Please put two blank lines between class and method definitions
 
 ### JavaScript
 
-* Please follow the [Airbnb style guide](https://github.com/airbnb/javascript) with the modifications configured in `package.json` and use eslint to check your code e.g. using `npm run lint`
+* Please follow the [Airbnb style guide](https://github.com/airbnb/javascript) with the modifications configured in `package.json` and use eslint to check your code e.g. using `docker-compose run node npm run lint`
 * Please use double quotes (") for strings
 
 ### Line length
@@ -58,15 +66,15 @@ The frontend is written in JavaScript (ES6).
 
 ## Unit tests
 
-* These are a work in progress but please do write unit tests for any new code (apart from that which downloads external data) and check coverage
+These are a work in progress but please do write unit tests for any new code (apart from that which downloads external data) and check coverage.
 
 ### Python
 
 * You can find unit tests in `tests/` with a file per class per module
-* `scripts/run_tests.sh` will run the tests and provide a coverage report in `coverage/python`
+* `docker-compose run python scripts/run_tests.sh` will run the tests and provide a coverage report in `coverage/python`
 
 ### JavaScript
 
 * You can find unit tests in `fhodot/app/ui/src`
-* `npm run test` will run the tests in  using  and provide a coverage report in `coverage/javascript`
-* Tests can also be run in a browser (`http://127.0.0.1:5000/tests.html`) once bundled with `npm run watch` or `npm run build`
+* `docker-compose run node npm run test` will run the tests in Chromium Headless using Karma and provide a coverage report in `coverage/javascript`
+* Tests can also be run in a browser (`http://127.0.0.1:5000/tests.html`) once bundled with `docker-compose up node` or `docker-compose run node npm run build`

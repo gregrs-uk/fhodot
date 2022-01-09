@@ -7,6 +7,7 @@ from flask import Flask
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
+from fhodot.config import REDIS_URL
 from fhodot.database import Session
 
 
@@ -19,7 +20,7 @@ else:
 limiter = Limiter(app,
                   key_func=get_remote_address,
                   default_limits=["10 per second", "60 per minute"],
-                  storage_uri="redis://localhost:6379")
+                  storage_uri=REDIS_URL)
 
 # see https://flask.palletsprojects.com/en/1.1.x/patterns/packages/
 import fhodot.app.routes # pylint: disable=wrong-import-position,cyclic-import
