@@ -22,7 +22,7 @@ def retry_if_request_exception(exception):
        wait_exponential_max=60000, # wait max 1'00" between attempts
        stop_max_delay=181000, # wait up to a maximum of 3'01"
        retry_on_exception=retry_if_request_exception) # don't retry on others
-def download_with_retries(url, headers=None, encoding=None): # pragma: no cover
+def download_with_retries(url, headers=None, encoding=None, verify=None): # pragma: no cover
     """Download data from the internet
 
     If first attempt fails, wait and try again. The wait time increases
@@ -43,7 +43,7 @@ def download_with_retries(url, headers=None, encoding=None): # pragma: no cover
     headers = {**headers, "user-agent": USER_AGENT}
 
     try:
-        response = get(url, headers=headers)
+        response = get(url, headers=headers, verify=verify)
         response.raise_for_status() # raise on 4xx or 5xx error
     except RequestException: # should cover all requests exceptions
         warning(
@@ -71,7 +71,10 @@ def download_from_api(endpoint): # pragma: no cover
     api_headers = {"x-api-version": "2",
                    "accept": "application/xml"}
 
-    return download_with_retries(api_base_url + endpoint, api_headers)
+    return download_with_retries(
+        url=api_base_url + endpoint,
+        headers=api_headers,
+        verify="fhodot/food_cert_chain.pem")
 
 
 def download_authorities_from_api(): # pragma: no cover
@@ -238,7 +241,10 @@ def download_establishments_xml_file(authority): # pragma: no cover
     """Download the establishments XML file for an authority"""
 
     return download_with_retries(
-        authority.xml_url, {"accept": "text/xml"}, "UTF-8")
+        url=authority.xml_url,
+        headers={"accept": "text/xml"},
+        encoding="UTF-8",
+        verify="fhodot/food_cert_chain.pem")
 
 
 def parse_xml_establishments(xml_string):
