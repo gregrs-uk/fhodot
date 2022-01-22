@@ -2,13 +2,7 @@ library(targets)
 library(tarchetypes)
 
 source("R/functions.R")
-con <- DBI::dbConnect(
-  RPostgres::Postgres(),
-  dbname = "gregrs_fhodot",
-  host = "db",
-  user = "postgres",
-  password = "db"
-)
+source("R/config.R")
 
 tar_option_set(
   packages = c(

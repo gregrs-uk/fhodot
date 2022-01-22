@@ -3,7 +3,7 @@
 from logging import CRITICAL, ERROR, WARNING, INFO, DEBUG # pylint: disable=unused-import
 
 # using Docker
-DATABASE_URL = "postgresql://postgres:db@db:5432/gregrs_fhodot"
+DATABASE_URL = "postgresql://postgres:db@postgis:5432/gregrs_fhodot"
 REDIS_URL = "redis://redis:6379"
 
 # or running locally without Docker
