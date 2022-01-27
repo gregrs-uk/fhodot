@@ -1,13 +1,12 @@
 #!/bin/sh
 
-imposm_binary_dir=/imposm
-osm_import_dir=/fhodot/import/osm
-data_file=$osm_import_dir/britain-and-ireland-latest.osm.pbf
-database_name=gregrs_fhodot
-
+# absolute path to script
+script=$(readlink -f "$0")
+scriptpath=$(dirname "$script")
+. "$scriptpath"/import_osm_config.sh
 
 # cd because imposm_config.json references files in osm_import_dir
-original_dir=`pwd`
+original_dir="$(pwd)"
 cd $osm_import_dir || exit 1
 
 $imposm_binary_dir/imposm import -quiet -config imposm_config.json \
