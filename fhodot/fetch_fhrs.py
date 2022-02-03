@@ -71,10 +71,7 @@ def download_from_api(endpoint): # pragma: no cover
     api_headers = {"x-api-version": "2",
                    "accept": "application/xml"}
 
-    return download_with_retries(
-        url=api_base_url + endpoint,
-        headers=api_headers,
-        verify="fhodot/food_cert_chain.pem")
+    return download_with_retries(api_base_url + endpoint, api_headers)
 
 
 def download_authorities_from_api(): # pragma: no cover
@@ -241,10 +238,7 @@ def download_establishments_xml_file(authority): # pragma: no cover
     """Download the establishments XML file for an authority"""
 
     return download_with_retries(
-        url=authority.xml_url,
-        headers={"accept": "text/xml"},
-        encoding="UTF-8",
-        verify="fhodot/food_cert_chain.pem")
+        authority.xml_url, {"accept": "text/xml"}, "UTF-8")
 
 
 def parse_xml_establishments(xml_string):
