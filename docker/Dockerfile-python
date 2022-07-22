@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM python:3.8.10-buster
+FROM python:3.10.4-bullseye
 
 WORKDIR /fhodot
 

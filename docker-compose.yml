@@ -20,7 +20,7 @@ services:
       POSTGRES_PASSWORD: db
       POSTGRES_DB: gregrs_fhodot
   redis:
-    image: redis:5.0.7
+    image: redis:6.0.16
   imposm:
     build:
       context: .

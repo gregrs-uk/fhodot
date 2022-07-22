@@ -1,11 +1,11 @@
 # syntax=docker/dockerfile:1
 
-FROM r-base:3.6.3
+FROM r-base:4.1.2
 
 RUN apt-get update && apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev libpq-dev pandoc
 
 RUN R -e 'install.packages("remotes", repos = c(CRAN = "https://cloud.r-project.org"))'
-RUN R -e 'remotes::install_github("rstudio/renv@0.15.1")'
+RUN R -e 'remotes::install_github("rstudio/renv@0.15.5")'
 
 WORKDIR /fhodot/stats
 COPY stats/renv.lock renv.lock
