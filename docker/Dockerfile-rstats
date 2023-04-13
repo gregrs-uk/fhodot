@@ -9,6 +9,7 @@ RUN R -e 'remotes::install_github("rstudio/renv@0.15.5")'
 
 WORKDIR /fhodot/stats
 COPY stats/renv.lock renv.lock
+ENV RENV_PATHS_LIBRARY /renv-library # outside /fhodot bind mount
 RUN R -e 'renv::restore()'
 
 CMD [ "R", "-q" , "-e", "targets::tar_make(reporter='silent')"]
