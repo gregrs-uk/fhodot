@@ -289,6 +289,9 @@ get_plots_by_district <- function(stats_by_district, ons_districts) {
 
 
 export_plot <- function(plot, path) {
+  output_dir <- dirname(path)
+  if(!dir.exists(output_dir)) dir.create(output_dir)
+  
   ggsave(
     path,
     plot,
