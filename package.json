@@ -23,7 +23,7 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^4.0.2",
     "leaflet": "^1.7.1",
-    "leaflet.markercluster": "^1.4.1",
+    "leaflet.markercluster": "^1.5.3",
     "mocha": "^8.1.0",
     "mocha-loader": "^5.1.5",
     "sinon": "^9.0.2",
@@ -70,15 +70,18 @@
     }
   },
   "scripts": {
-    "build": "webpack --config webpack.prod.js",
+    "build": "export NODE_OPTIONS=--openssl-legacy-provider && webpack --config webpack.prod.js",
     "lint": "eslint *.js fhodot/app/ui/src/*.js fhodot/app/ui/src/lib/*.js",
-    "stats": "webpack --json --config webpack.prod.js > stats.json",
-    "test": "karma start",
-    "watch": "webpack --watch --config webpack.dev.js"
+    "stats": "export NODE_OPTIONS=--openssl-legacy-provider && webpack --json --config webpack.prod.js > stats.json",
+    "test": "export NODE_OPTIONS=--openssl-legacy-provider && karma start",
+    "watch": "export NODE_OPTIONS=--openssl-legacy-provider && webpack --watch --config webpack.dev.js"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/gregrs-uk/fhodot.git"
+  },
+  "engines": {
+    "node": "^18.17.1"
   },
   "author": "Greg",
   "license": "GPL-3.0-or-later",
