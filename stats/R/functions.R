@@ -17,6 +17,7 @@ read_bl_districts <- function(path) {
     # or codes have been changed
     mutate(
       code = case_when(
+        # --- changes in 2019 ---
         # Bournemouth, Christchurch and Poole
         code == "E06000028" ~ "E06000058", # Bournemouth
         code == "E07000048" ~ "E06000058", # Christchurch
@@ -30,17 +31,19 @@ read_bl_districts <- function(path) {
         # Somerset West and Taunton
         code == "E07000191" ~ "E07000246", # West Somerset
         code == "E07000190" ~ "E07000246", # Taunton Deane
-        # Buckinghamshire
-        code == "E07000004" ~ "E06000060", # Aylesbury Vale
-        code == "E07000007" ~ "E06000060", # Wycombe
-        code == "E07000005" ~ "E06000060", # Chiltern
-        code == "E07000006" ~ "E06000060", # South Bucks
         # West Suffolk
         code == "E07000201" ~ "E07000245", # Forest Heath
         code == "E07000204" ~ "E07000245", # St Edmundsbury
         # East Suffolk
         code == "E07000206" ~ "E07000244", # Waveney
         code == "E07000205" ~ "E07000244", # Suffolk Coastal
+        # --- changes in 2020 ---
+        # Buckinghamshire
+        code == "E07000004" ~ "E06000060", # Aylesbury Vale
+        code == "E07000007" ~ "E06000060", # Wycombe
+        code == "E07000005" ~ "E06000060", # Chiltern
+        code == "E07000006" ~ "E06000060", # South Bucks
+        # --- changes in 2021 ---
         # North Northamptonshire
         code == "E07000150" ~ "E06000061", # Corby
         code == "E07000152" ~ "E06000061", # East Northamptonshire
@@ -50,7 +53,7 @@ read_bl_districts <- function(path) {
         code == "E07000151" ~ "E06000062", # Daventry
         code == "E07000154" ~ "E06000062", # Northampton
         code == "E07000155" ~ "E06000062", # South Northamptonshire
-        # 1:1 changes of code
+        # --- 1:1 changes of code ---
         code == "S12000015" ~ "S12000047", # Fife
         code == "S12000046" ~ "S12000049", # Glasgow
         code == "S12000024" ~ "S12000048", # Perth and Kinross
