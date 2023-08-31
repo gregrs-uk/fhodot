@@ -28,9 +28,9 @@ read_bl_districts <- function(path) {
         code == "E07000049" ~ "E06000059", # East Dorset
         code == "E07000051" ~ "E06000059", # Purbeck
         code == "E07000053" ~ "E06000059", # Weymouth and Portland
-        # Somerset West and Taunton
-        code == "E07000191" ~ "E07000246", # West Somerset
-        code == "E07000190" ~ "E07000246", # Taunton Deane
+        # Somerset West and Taunton, see 2023, when further amalgamated
+        # code == "E07000191" ~ "E07000246", # West Somerset
+        # code == "E07000190" ~ "E07000246", # Taunton Deane
         # West Suffolk
         code == "E07000201" ~ "E07000245", # Forest Heath
         code == "E07000204" ~ "E07000245", # St Edmundsbury
@@ -53,6 +53,29 @@ read_bl_districts <- function(path) {
         code == "E07000151" ~ "E06000062", # Daventry
         code == "E07000154" ~ "E06000062", # Northampton
         code == "E07000155" ~ "E06000062", # South Northamptonshire
+        # --- changes in 2023 ---
+        # Cumberland
+        code == "E07000026" ~ "E06000063", # Allerdale
+        code == "E07000028" ~ "E06000063", # Carlisle
+        code == "E07000029" ~ "E06000063", # Copeland
+        # Westmorland and Furness
+        code == "E07000027" ~ "E06000064", # Barrow-in-Furness
+        code == "E07000030" ~ "E06000064", # Eden
+        code == "E07000031" ~ "E06000064", # South Lakeland
+        # North Yorkshire
+        code == "E07000163" ~ "E06000065", # Craven
+        code == "E07000164" ~ "E06000065", # Hambleton
+        code == "E07000165" ~ "E06000065", # Harrogate
+        code == "E07000166" ~ "E06000065", # Richmondshire
+        code == "E07000167" ~ "E06000065", # Ryedale
+        code == "E07000168" ~ "E06000065", # Scarborough
+        code == "E07000169" ~ "E06000065", # Selby
+        # Somerset Council
+        code == "E07000187" ~ "E06000066", # Mendip
+        code == "E07000188" ~ "E06000066", # Sedgemoor
+        code == "E07000191" ~ "E06000066", # West Somerset
+        code == "E07000190" ~ "E06000066", # Taunton Deane
+        code == "E07000189" ~ "E06000066", # South Somerset
         # --- 1:1 changes of code ---
         code == "S12000015" ~ "S12000047", # Fife
         code == "S12000046" ~ "S12000049", # Glasgow
