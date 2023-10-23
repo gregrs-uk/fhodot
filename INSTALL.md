@@ -18,8 +18,8 @@ Run `docker-compose run node npm ci` to build and run the `node` service and ins
 
 ## Download and import data
 
-1. Download [ONS Local Authority Districts boundaries](https://geoportal.statistics.gov.uk/datasets/local-authority-districts-december-2020-uk-bgc) (BGC, i.e. 20m generalised and clipped to coastline) shapefiles, place them in the `import/boundaries` directory and run `docker-compose run python python -m scripts.import_boundaries`. (The first `python` is the name of the service and the second is part of the command. The service will be built the first time it is run)
-1. Download [Ordnance Survey Open Names](https://osdatahub.os.uk/downloads/open/OpenNames) CSV files, place them in the `import/os_open_names` directory and run `docker-compose python python -m scripts.import_os_open_names`
+1. Download [ONS Local Authority Districts boundaries](https://geoportal.statistics.gov.uk/datasets/local-authority-districts-may-2023-uk-bgc) (BGC, i.e. 20m generalised and clipped to coastline) shapefiles, place them in the `import/boundaries` directory and run `docker-compose run python python -m scripts.import_boundaries`. (The first `python` is the name of the service and the second is part of the command. The service will be built the first time it is run)
+1. Download [Ordnance Survey Open Names](https://osdatahub.os.uk/downloads/open/OpenNames) CSV files, place them in the `import/os_open_names` directory and run `docker-compose run python python -m scripts.import_os_open_names`
 1. Download [Geofabrik export of Britain and Ireland](http://download.geofabrik.de/europe/britain-and-ireland-latest.osm.pbf), place the file in `import/osm`, and run `docker-compose up imposm` to build the `imposm` service and import the necessary OSM data to the database
 1. Download and import FHRS data using `docker-compose run python python -m scripts.update_fhrs`
 1. Calculate statistics using `docker-compose run python python -m scripts.calculate_statistics`
