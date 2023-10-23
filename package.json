@@ -23,7 +23,7 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^4.0.2",
     "leaflet": "^1.7.1",
-    "leaflet.markercluster": "^1.4.1",
+    "leaflet.markercluster": "^1.5.3",
     "mocha": "^8.1.0",
     "mocha-loader": "^5.1.5",
     "sinon": "^9.0.2",
