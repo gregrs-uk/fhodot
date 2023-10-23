@@ -18,6 +18,7 @@ read_bl_districts <- function(path) {
     mutate(
       code = case_when(
         # Cumbria
+        code == "E10000006" ~ "E06000064", # Cumbria
         code == "E07000026" ~ "E06000063", # Allerdale
         code == "E07000028" ~ "E06000063", # City of Carlisle
         code == "E07000029" ~ "E06000063", # Borough of Copeland
