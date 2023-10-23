@@ -80,6 +80,9 @@
     "type": "git",
     "url": "git+https://github.com/gregrs-uk/fhodot.git"
   },
+  "engines": {
+    "node": "^18.8"
+  },
   "author": "Greg",
   "license": "GPL-3.0-or-later",
   "bugs": {
