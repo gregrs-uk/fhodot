@@ -17,6 +17,29 @@ read_bl_districts <- function(path) {
     # or codes have been changed
     mutate(
       code = case_when(
+        # Cumbria
+        code == "E07000026" ~ "E06000063", # Allerdale
+        code == "E07000028" ~ "E06000063", # City of Carlisle
+        code == "E07000029" ~ "E06000063", # Borough of Copeland
+        # Westmorland and Furness
+        code == "E07000027" ~ "E06000064", # Barrow-in-Furness
+        code == "E07000030" ~ "E06000064", # Eden
+        code == "E07000031" ~ "E06000064", # South Lakeland
+        # North Yorkshire
+        code == "E10000023" ~ "E06000065", #North Yorkshire County Council
+        code == "E07000163" ~ "E06000065", # Craven
+        code == "E07000164" ~ "E06000065", # Hambleton
+        code == "E07000165" ~ "E06000065", # Harrogate
+        code == "E07000166" ~ "E06000065", # Richmondshire
+        code == "E07000167" ~ "E06000065", # Ryedale
+        code == "E07000168" ~ "E06000065", # Scarborough
+        code == "E07000169" ~ "E06000065", # Selby
+        # Somerset Council
+        code == "E10000027" ~ "E06000066", # Somerset County Council
+        code == "E07000187" ~ "E06000066", # Mendip
+        code == "E07000188" ~ "E06000066", # Sedgemoor
+        code == "E07000189" ~ "E06000066", # Somerset West and Taunton,
+        code == "E07000246" ~ "E06000066", # South Somerset
         # Bournemouth, Christchurch and Poole
         code == "E06000028" ~ "E06000058", # Bournemouth
         code == "E07000048" ~ "E06000058", # Christchurch
