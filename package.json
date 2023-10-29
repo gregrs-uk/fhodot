@@ -70,11 +70,11 @@
     }
   },
   "scripts": {
-    "build": "webpack --config webpack.prod.js",
-    "lint": "eslint *.js fhodot/app/ui/src/*.js fhodot/app/ui/src/lib/*.js",
-    "stats": "webpack --json --config webpack.prod.js > stats.json",
-    "test": "karma start",
-    "watch": "webpack --watch --config webpack.dev.js"
+    "build": "export NODE_OPTIONS=--openssl-legacy-provider && webpack --config webpack.prod.js",
+    "lint": "export NODE_OPTIONS=--openssl-legacy-provider && eslint *.js fhodot/app/ui/src/*.js fhodot/app/ui/src/lib/*.js",
+    "stats": "export NODE_OPTIONS=--openssl-legacy-provider && webpack --json --config webpack.prod.js > stats.json",
+    "test": "export NODE_OPTIONS=--openssl-legacy-provider && karma start",
+    "watch": "export NODE_OPTIONS=--openssl-legacy-provider && webpack --watch --config webpack.dev.js"
   },
   "repository": {
     "type": "git",
