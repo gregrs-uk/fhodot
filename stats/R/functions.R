@@ -3,6 +3,97 @@ red <- "#FF89AC"
 green <- "#7ACE00"
 
 
+# make manual changes to BoundaryLine or ONS district codes where districts
+# have amalgamated or codes have been changed
+manually_change_district_codes <- function(data, code_col = district_code) {
+  data %>%
+    mutate(
+      # each year's changes in a separate case_when so further changes can be
+      # made lower down, e.g. West Somerset and Taunton Deane were amalgamated
+      # to form Somerset West and Taunton in 2019, which was then further
+      # amalgamated into Somerset Council in 2023
+      # --- changes in 2019 ---
+      {{ code_col }} := case_when(
+        # Bournemouth, Christchurch and Poole
+        {{ code_col }} == "E06000028" ~ "E06000058", # Bournemouth
+        {{ code_col }} == "E07000048" ~ "E06000058", # Christchurch
+        {{ code_col }} == "E06000029" ~ "E06000058", # Poole
+        # Dorset
+        {{ code_col }} == "E07000052" ~ "E06000059", # West Dorset
+        {{ code_col }} == "E07000050" ~ "E06000059", # North Dorset
+        {{ code_col }} == "E07000049" ~ "E06000059", # East Dorset
+        {{ code_col }} == "E07000051" ~ "E06000059", # Purbeck
+        {{ code_col }} == "E07000053" ~ "E06000059", # Weymouth and Portland
+        # Somerset West and Taunton, see also 2023
+        {{ code_col }} == "E07000191" ~ "E07000246", # West Somerset
+        {{ code_col }} == "E07000190" ~ "E07000246", # Taunton Deane
+        # West Suffolk
+        {{ code_col }} == "E07000201" ~ "E07000245", # Forest Heath
+        {{ code_col }} == "E07000204" ~ "E07000245", # St Edmundsbury
+        # East Suffolk
+        {{ code_col }} == "E07000206" ~ "E07000244", # Waveney
+        {{ code_col }} == "E07000205" ~ "E07000244", # Suffolk Coastal
+        TRUE ~ {{ code_col }}
+      ),
+      # --- changes in 2020 ---
+      {{ code_col }} := case_when(
+        # Buckinghamshire
+        {{ code_col }} == "E07000004" ~ "E06000060", # Aylesbury Vale
+        {{ code_col }} == "E07000007" ~ "E06000060", # Wycombe
+        {{ code_col }} == "E07000005" ~ "E06000060", # Chiltern
+        {{ code_col }} == "E07000006" ~ "E06000060", # South Bucks
+        TRUE ~ {{ code_col }}
+      ),
+      # --- changes in 2021 ---
+      {{ code_col }} := case_when(
+        # North Northamptonshire
+        {{ code_col }} == "E07000150" ~ "E06000061", # Corby
+        {{ code_col }} == "E07000152" ~ "E06000061", # East Northamptonshire
+        {{ code_col }} == "E07000153" ~ "E06000061", # Kettering
+        {{ code_col }} == "E07000156" ~ "E06000061", # Wellingborough
+        # West Northamptonshire
+        {{ code_col }} == "E07000151" ~ "E06000062", # Daventry
+        {{ code_col }} == "E07000154" ~ "E06000062", # Northampton
+        {{ code_col }} == "E07000155" ~ "E06000062", # South Northamptonshire
+        TRUE ~ {{ code_col }}
+      ),
+      # --- changes in 2023 ---
+      {{ code_col }} := case_when(
+        # Cumberland
+        {{ code_col }} == "E07000026" ~ "E06000063", # Allerdale
+        {{ code_col }} == "E07000028" ~ "E06000063", # Carlisle
+        {{ code_col }} == "E07000029" ~ "E06000063", # Copeland
+        # Westmorland and Furness
+        {{ code_col }} == "E07000027" ~ "E06000064", # Barrow-in-Furness
+        {{ code_col }} == "E07000030" ~ "E06000064", # Eden
+        {{ code_col }} == "E07000031" ~ "E06000064", # South Lakeland
+        # North Yorkshire
+        {{ code_col }} == "E07000163" ~ "E06000065", # Craven
+        {{ code_col }} == "E07000164" ~ "E06000065", # Hambleton
+        {{ code_col }} == "E07000165" ~ "E06000065", # Harrogate
+        {{ code_col }} == "E07000166" ~ "E06000065", # Richmondshire
+        {{ code_col }} == "E07000167" ~ "E06000065", # Ryedale
+        {{ code_col }} == "E07000168" ~ "E06000065", # Scarborough
+        {{ code_col }} == "E07000169" ~ "E06000065", # Selby
+        # Somerset Council
+        {{ code_col }} == "E07000187" ~ "E06000066", # Mendip
+        {{ code_col }} == "E07000188" ~ "E06000066", # Sedgemoor
+        {{ code_col }} == "E07000189" ~ "E06000066", # South Somerset
+        {{ code_col }} == "E07000246" ~ "E06000066", # Somerset West and Taunton
+        TRUE ~ {{ code_col }}
+      ),
+      # --- 1:1 changes of {{ code_col }} ---
+      {{ code_col }} := case_when(
+        {{ code_col }} == "S12000015" ~ "S12000047", # Fife
+        {{ code_col }} == "S12000046" ~ "S12000049", # Glasgow
+        {{ code_col }} == "S12000024" ~ "S12000048", # Perth and Kinross
+        {{ code_col }} == "S12000044" ~ "S12000050", # North Lanarkshire
+        TRUE ~ {{ code_col }}
+      )
+    )
+}
+
+
 fetch_ons_districts <- function() {
   ons_districts <- tbl(con, "la_districts") %>%
     select(code, name_ons = name) %>%
@@ -13,83 +104,13 @@ fetch_ons_districts <- function() {
 read_bl_districts <- function(path) {
   read_csv(path) %>%
     select(gid_bl = gid, name_bl = name, code) %>%
-    # make manual changes to BoundaryLine codes where districts have amalgamated
-    # or codes have been changed
-    mutate(
-      code = case_when(
-        # --- changes in 2019 ---
-        # Bournemouth, Christchurch and Poole
-        code == "E06000028" ~ "E06000058", # Bournemouth
-        code == "E07000048" ~ "E06000058", # Christchurch
-        code == "E06000029" ~ "E06000058", # Poole
-        # Dorset
-        code == "E07000052" ~ "E06000059", # West Dorset
-        code == "E07000050" ~ "E06000059", # North Dorset
-        code == "E07000049" ~ "E06000059", # East Dorset
-        code == "E07000051" ~ "E06000059", # Purbeck
-        code == "E07000053" ~ "E06000059", # Weymouth and Portland
-        # Somerset West and Taunton, see 2023, when further amalgamated
-        # code == "E07000191" ~ "E07000246", # West Somerset
-        # code == "E07000190" ~ "E07000246", # Taunton Deane
-        # West Suffolk
-        code == "E07000201" ~ "E07000245", # Forest Heath
-        code == "E07000204" ~ "E07000245", # St Edmundsbury
-        # East Suffolk
-        code == "E07000206" ~ "E07000244", # Waveney
-        code == "E07000205" ~ "E07000244", # Suffolk Coastal
-        # --- changes in 2020 ---
-        # Buckinghamshire
-        code == "E07000004" ~ "E06000060", # Aylesbury Vale
-        code == "E07000007" ~ "E06000060", # Wycombe
-        code == "E07000005" ~ "E06000060", # Chiltern
-        code == "E07000006" ~ "E06000060", # South Bucks
-        # --- changes in 2021 ---
-        # North Northamptonshire
-        code == "E07000150" ~ "E06000061", # Corby
-        code == "E07000152" ~ "E06000061", # East Northamptonshire
-        code == "E07000153" ~ "E06000061", # Kettering
-        code == "E07000156" ~ "E06000061", # Wellingborough
-        # West Northamptonshire
-        code == "E07000151" ~ "E06000062", # Daventry
-        code == "E07000154" ~ "E06000062", # Northampton
-        code == "E07000155" ~ "E06000062", # South Northamptonshire
-        # --- changes in 2023 ---
-        # Cumberland
-        code == "E07000026" ~ "E06000063", # Allerdale
-        code == "E07000028" ~ "E06000063", # Carlisle
-        code == "E07000029" ~ "E06000063", # Copeland
-        # Westmorland and Furness
-        code == "E07000027" ~ "E06000064", # Barrow-in-Furness
-        code == "E07000030" ~ "E06000064", # Eden
-        code == "E07000031" ~ "E06000064", # South Lakeland
-        # North Yorkshire
-        code == "E07000163" ~ "E06000065", # Craven
-        code == "E07000164" ~ "E06000065", # Hambleton
-        code == "E07000165" ~ "E06000065", # Harrogate
-        code == "E07000166" ~ "E06000065", # Richmondshire
-        code == "E07000167" ~ "E06000065", # Ryedale
-        code == "E07000168" ~ "E06000065", # Scarborough
-        code == "E07000169" ~ "E06000065", # Selby
-        # Somerset Council
-        code == "E07000187" ~ "E06000066", # Mendip
-        code == "E07000188" ~ "E06000066", # Sedgemoor
-        code == "E07000191" ~ "E06000066", # West Somerset
-        code == "E07000190" ~ "E06000066", # Taunton Deane
-        code == "E07000189" ~ "E06000066", # South Somerset
-        # --- 1:1 changes of code ---
-        code == "S12000015" ~ "S12000047", # Fife
-        code == "S12000046" ~ "S12000049", # Glasgow
-        code == "S12000024" ~ "S12000048", # Perth and Kinross
-        code == "S12000044" ~ "S12000050", # North Lanarkshire
-        TRUE ~ code
-      )
-    )
+    manually_change_district_codes(code)
 }
 
 
 get_district_mapping <- function(ons_districts, bl_districts) {
-  ons_districts %>%
-    left_join(bl_districts, by = "code")
+  bl_districts %>%
+    left_join(ons_districts, by = "code")
 }
 
 
@@ -179,7 +200,12 @@ get_old_stats_fhrs <- function(old_stats) {
 
 
 fetch_db_stats_osm <- function() {
-  tbl(con, "stats_osm") %>% collect()
+  tbl(con, "stats_osm") %>%
+    collect() %>%
+    manually_change_district_codes() %>%
+    # in case of amalgamated districts
+    group_by(date, district_code, statistic) %>%
+    summarise(value = sum(value), .groups = "drop")
 }
 
 
@@ -188,7 +214,11 @@ fetch_db_stats_fhrs <- function() {
     left_join(tbl(con, "fhrs_authorities"), by = c("authority_code" = "code")) %>%
     select(date, district_code, statistic, value) %>%
     filter(!is.na(district_code)) %>%
-    collect()
+    collect() %>%
+    manually_change_district_codes() %>%
+    # in case of amalgamated districts
+    group_by(date, district_code, statistic) %>%
+    summarise(value = sum(value), .groups = "drop")
 }
 
 
