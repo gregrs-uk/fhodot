@@ -2,9 +2,11 @@
 
 from csv import writer
 from io import StringIO
+from itertools import groupby
 from logging import error
 
 from flask import abort, make_response, request
+from geoalchemy2.functions import ST_Intersects
 from geojson import dumps, Feature, FeatureCollection
 from sqlalchemy.orm import joinedload, undefer
 
@@ -18,7 +20,7 @@ from fhodot.app.suggest import (get_suggested_matches_by_osm_id,
                                 get_full_osm_objects_query,
                                 get_full_fhrs_establishments_dict)
 from fhodot.app.utils import (
-    get_bbox, get_geojson_line, get_geojson_point,
+    get_bbox, get_envelope, get_geojson_line, get_geojson_point,
     get_geojson_feature_collection_string, num_objects_within_limit,
     query_within_bbox)
 from fhodot.database import Session
@@ -135,6 +137,55 @@ def data_fhrs_single(fhrs_id):
     properties["parsedAddress"] = parse_establishment_address(
         fhrs_establishment)
     return properties
+
+
+@app.route(f"{API_ROOT}/postcode")
+def data_postcode():
+    """OSM objects and FHRS establishments with matching postcodes
+
+    Queries within a bounding box and returns data in JSON format
+    """
+
+    bbox = get_bbox(request.args)
+    if not num_objects_within_limit(OSMObject, bbox, 10000):
+        abort(413)
+    envelope = get_envelope(bbox)
+
+    result = Session.query(OSMObject, FHRSEstablishment).\
+        filter(ST_Intersects(OSMObject.location, envelope)).\
+        join(FHRSEstablishment,
+            OSMObject.addr_postcode == FHRSEstablishment.postcode).\
+        order_by(OSMObject.addr_postcode, OSMObject.name, 
+                 OSMObject.osm_id_single_space, FHRSEstablishment.name,
+                 FHRSEstablishment.fhrs_id)
+
+    def get_osm_object_from_row(row):
+        return row[0]
+
+    features = []
+    for osm_object, rows in groupby(result, get_osm_object_from_row):
+        # filtering as part of query not implemented
+        if (osm_object.num_matches_same_postcodes +
+            osm_object.num_matches_different_postcodes > 0):
+                continue
+        properties = get_selected_osm_properties(osm_object)
+
+        properties["postcodeMatches"] = []
+        for row in rows:
+            fhrs_establishment = row[1]
+            if (fhrs_establishment.num_matches_same_postcodes +
+                fhrs_establishment.num_matches_different_postcodes > 0):
+                    continue
+            est_properties = get_selected_fhrs_properties(fhrs_establishment)
+            properties["postcodeMatches"].append(est_properties)
+        if not properties["postcodeMatches"]:
+            continue
+
+        properties["fhrsMappings"] = get_fhrs_mappings(osm_object)
+        features.append(
+            get_geojson_point(osm_object.lat, osm_object.lon, properties))
+
+    return get_geojson_feature_collection_string(features)
 
 
 @app.route(f"{API_ROOT}/stats_fhrs")

@@ -268,9 +268,19 @@ export default class Inspector {
    * Add suggested matching FHRS establishments to the inspector
    */
   addSuggestedMatches(properties) {
-    properties.suggestedMatches.forEach((suggestedMatch) => {
+    let suggestedMatches;
+    let heading;
+    if (properties.suggestedMatches) {
+      suggestedMatches = properties.suggestedMatches;
+      heading = "Suggested match";
+    } else if (properties.postcodeMatches) {
+      suggestedMatches = properties.postcodeMatches;
+      heading = "Postcode match";
+    }
+
+    suggestedMatches.forEach((suggestedMatch) => {
       const suggestedMatchDiv = getFHRSEstablishmentDiv(suggestedMatch, {
-        heading: "Suggested match",
+        heading,
         cssClass: "suggested-match",
       });
       const josmAddTagsPara = createElementWith("p", "Loading parsed address");

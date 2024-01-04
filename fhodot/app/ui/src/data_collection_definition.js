@@ -49,6 +49,15 @@ const getDataCollection = (inspector) => new DataCollection([
     keyboardShortcut: "s",
   }),
   new DataSource({
+    name: "postcode",
+    type: "osm",
+    label: "Postcode matches",
+    jsonURL: `api/postcode`,
+    markerClickFunction: (data) => inspector.updateOSM(data, true),
+    tables: [],
+    keyboardShortcut: "p",
+  }),
+  new DataSource({
     name: "distant",
     type: "osm",
     label: "Distant matches",
