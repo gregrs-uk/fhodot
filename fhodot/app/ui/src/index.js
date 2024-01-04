@@ -8,7 +8,6 @@ import "./styles.css";
 
 import GraphArea from "./lib/graph_area";
 import Inspector from "./lib/inspector";
-import { styleMarker } from "./lib/marker_styling";
 import SlippyMap from "./lib/slippy_map";
 import { PayloadTooLargeError } from "./lib/utils";
 import getDataCollection from "./data_collection_definition";
