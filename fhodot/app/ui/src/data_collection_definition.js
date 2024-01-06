@@ -13,6 +13,7 @@ import {
   mismatchesTable,
   osmPostcodeDifferencesTable,
   osmUnmatchedTable,
+  postcodeMatchTable,
 } from "./table_definitions";
 
 // define data sources, layers and associated functions
@@ -54,7 +55,7 @@ const getDataCollection = (inspector) => new DataCollection([
     label: "Postcode matches",
     jsonURL: `api/postcode`,
     markerClickFunction: (data) => inspector.updateOSM(data, true),
-    tables: [],
+    tables: [postcodeMatchTable],
     keyboardShortcut: "p",
   }),
   new DataSource({
