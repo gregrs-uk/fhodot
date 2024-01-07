@@ -64,6 +64,23 @@ export default class Table {
   }
 
   /**
+   * Use table definition to insert row for feature
+   */
+  insertRowForFeature(feature, tableBody) {
+    const row = tableBody.insertRow();
+    this.definition.forEach((field) => {
+      if (typeof feature[field] === "string" || feature[field] === null) {
+        row.insertCell().innerHTML = getValueOrPlaceholder(feature[field]);
+      } else if (feature[field] instanceof HTMLElement
+                  && feature[field].nodeName === "TD") {
+        row.append(feature[field]);
+      } else {
+        throw new Error("Expecting field to be string or <td> HTMLELement");
+      }
+    });
+  }
+
+  /**
    * Use table definition to return <table> HTMLElement for features
    */
   getTable(features) {
@@ -75,19 +92,9 @@ export default class Table {
     });
 
     const tableBody = table.createTBody();
-    features.forEach((feature) => {
-      const row = tableBody.insertRow();
-      this.definition.forEach((field) => {
-        if (typeof feature[field] === "string" || feature[field] === null) {
-          row.insertCell().innerHTML = getValueOrPlaceholder(feature[field]);
-        } else if (feature[field] instanceof HTMLElement
-                   && feature[field].nodeName === "TD") {
-          row.append(feature[field]);
-        } else {
-          throw new Error("Expecting field to be string or <td> HTMLELement");
-        }
-      });
-    });
+    features.forEach(
+      (feature) => this.insertRowForFeature(feature, tableBody),
+    );
 
     return table;
   }
