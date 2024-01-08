@@ -264,6 +264,13 @@ td.matched {
 td.unmatched {
   background-color: rgba(0, 203, 255, 0.1);
 }
+td > p {
+  margin: 0px;
+}
+#postcode-matches tbody tr {
+  background-color: rgb(255, 255, 255);
+  border: 1px solid rgb(180, 180, 180);
+}
 
 /* FOOTER */
 footer > p {

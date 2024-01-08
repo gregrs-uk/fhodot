@@ -13,6 +13,8 @@ import {
   getJOSMLoadURL,
   getIDEditURL,
   openJOSMURL,
+  getJOSMAddFHRSIDTagURL,
+  bindJOSMAction,
 } from "./lib/utils";
 
 export const tableGroup = new TableGroup("tables");
@@ -385,3 +387,76 @@ export const fhrsNoLocationTable = new Table({
       .map(getFHRSNoLocationRow)
   ),
 });
+
+/**
+ * Table of postcode matches
+ */
+const postcodeMatchTable = new Table({
+  tableGroup,
+  elementID: "postcode-matches",
+  heading: `Unmatched OSM objects with postcodes matching unmatched FHRS
+    establishments`,
+  preTableMsg: `The following OSM objects either have no <code>fhrs:id</code>
+    tag or the <code>fhrs:id</code> does not match an establishment in the
+    current FSA data. The FHRS establishments listed alongside have not been
+    successfully matched to OSM objects using a valid <code>fhrs:id</code> but
+    their postcode matches the relevant OSM object.`,
+  emptyTableMsg: `No unmatched OSM objects with postcodes matching unmatched
+    FHRS establishments found on map`,
+  definition: new Map([
+    ["OSM <code>name</code>", null],
+    ["Postcode", null],
+    ["Edit", null],
+    ["On map above", null],
+    ["FHRS establishment name", null],
+    ["FHRS ID", null],
+    ["", null],
+  ]), // fields not required: insertRowForFeature redefined below
+  getProperties: (data) => data.features,
+});
+
+// redefine standard Table.insertRowForFeature method
+postcodeMatchTable.insertRowForFeature = (feature, tableBody) => {
+  const {
+    osmType, osmIDByType, name, postcode, postcodeMatches,
+  } = feature.properties;
+
+  const nameLink = getLink(
+    getValueOrPlaceholder(name), getOSMURL(osmType, osmIDByType),
+  );
+  const nameCell = createElementWith("td", nameLink);
+  const postcodeCell = createElementWith(
+    "td", getValueOrPlaceholder(postcode),
+  );
+  const editActionsCell = getEditActionsCell(osmType, osmIDByType);
+  const mapActionsCell = getMapActionsCell(feature);
+
+  let firstRowForFeature = true;
+  postcodeMatches.forEach((postcodeMatch) => {
+    const row = tableBody.insertRow();
+    if (firstRowForFeature) {
+      [nameCell, postcodeCell, editActionsCell, mapActionsCell]
+        .forEach((osmCell) => {
+          osmCell.setAttribute("rowspan", postcodeMatches.length);
+          osmCell.className = getFeatureStatus(feature); // eslint-disable-line no-param-reassign
+          row.append(osmCell);
+        });
+    }
+    row.insertCell().innerHTML = getLink(
+      getValueOrPlaceholder(postcodeMatch.name),
+      getFSAURL(postcodeMatch.fhrsID),
+    );
+    row.insertCell().innerHTML = getValueOrPlaceholder(postcodeMatch.fhrsID);
+    const JOSMPara = createElementWith(
+      "p", "Add <code>fhrs:id</code> in JOSM", "action",
+    );
+    row.insertCell().append(JOSMPara);
+    bindJOSMAction(
+      getJOSMAddFHRSIDTagURL(feature.properties, postcodeMatch.fhrsID),
+      JOSMPara,
+    );
+    firstRowForFeature = false;
+  });
+};
+
+export { postcodeMatchTable };
