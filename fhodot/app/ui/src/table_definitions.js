@@ -13,6 +13,8 @@ import {
   getJOSMLoadURL,
   getIDEditURL,
   openJOSMURL,
+  getJOSMAddFHRSIDTagURL,
+  bindJOSMAction,
 } from "./lib/utils";
 
 export const tableGroup = new TableGroup("tables");
@@ -401,7 +403,15 @@ const postcodeMatchTable = new Table({
     their postcode matches the relevant OSM object.`,
   emptyTableMsg: `No unmatched OSM objects with postcodes matching unmatched
     FHRS establishments found on map`,
-  definition: new Map(), // not required, insertRowForFeature redefined below
+  definition: new Map([
+    ["OSM <code>name</code>", null],
+    ["Postcode", null],
+    ["Edit", null],
+    ["On map above", null],
+    ["FHRS establishment name", null],
+    ["FHRS ID", null],
+    ["", null],
+  ]), // fields not required: insertRowForFeature redefined below
   getProperties: (data) => data.features,
 });
 
@@ -415,7 +425,6 @@ postcodeMatchTable.insertRowForFeature = (feature, tableBody) => {
     getValueOrPlaceholder(name), getOSMURL(osmType, osmIDByType),
   );
   const nameCell = createElementWith("td", nameLink);
-  nameCell.className = getFeatureStatus(feature);
   const postcodeCell = createElementWith(
     "td", getValueOrPlaceholder(postcode),
   );
@@ -429,6 +438,7 @@ postcodeMatchTable.insertRowForFeature = (feature, tableBody) => {
       [nameCell, postcodeCell, editActionsCell, mapActionsCell]
         .forEach((osmCell) => {
           osmCell.setAttribute("rowspan", postcodeMatches.length);
+          osmCell.className = getFeatureStatus(feature); // eslint-disable-line no-param-reassign
           row.append(osmCell);
         });
     }
@@ -437,6 +447,14 @@ postcodeMatchTable.insertRowForFeature = (feature, tableBody) => {
       getFSAURL(postcodeMatch.fhrsID),
     );
     row.insertCell().innerHTML = getValueOrPlaceholder(postcodeMatch.fhrsID);
+    const JOSMPara = createElementWith(
+      "p", "Add <code>fhrs:id</code> in JOSM", "action",
+    );
+    row.insertCell().append(JOSMPara);
+    bindJOSMAction(
+      getJOSMAddFHRSIDTagURL(feature.properties, postcodeMatch.fhrsID),
+      JOSMPara,
+    );
     firstRowForFeature = false;
   });
 };

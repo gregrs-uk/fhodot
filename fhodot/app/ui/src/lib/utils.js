@@ -76,6 +76,16 @@ export const getJOSMAddTagsURL = (fhrsProperties, osmProperties) => {
 };
 
 /**
+ * Return JOSM remote control URL to add fhrs:id tag only
+ */
+export const getJOSMAddFHRSIDTagURL = (osmProperties, fhrsID) => {
+  const { osmType, osmIDByType } = osmProperties;
+  const url = new URL(getJOSMLoadURL(osmType, osmIDByType));
+  url.searchParams.append("addtags", `fhrs:id=${fhrsID}`);
+  return url.toString();
+};
+
+/**
  * Open JOSM URL using fetch and return promise
  *
  * This is preferred over a simple link because it avoids navigating
