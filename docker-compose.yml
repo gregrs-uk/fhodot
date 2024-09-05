@@ -13,7 +13,7 @@ services:
       - postgis
       - redis
   postgis:
-    image: postgis/postgis:14-3.2
+    image: postgis/postgis:15-3.4
     ports:
       - 5432:5432
     volumes:
@@ -22,7 +22,7 @@ services:
       POSTGRES_PASSWORD: db
       POSTGRES_DB: gregrs_fhodot
   redis:
-    image: redis:6.0.16
+    image: redis:7.0.15-bookworm
   imposm:
     environment:
       PGHOST: postgis

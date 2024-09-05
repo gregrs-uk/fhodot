@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM r-base:4.1.2
+FROM r-base:4.2.2
 
 RUN apt-get update && apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev libpq-dev pandoc
 
