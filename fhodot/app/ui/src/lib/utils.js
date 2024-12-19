@@ -35,8 +35,7 @@ export const getOSMURL = (osmType, osmIDByType) => (
  * Return URL to load OSM object using JOSM remote control
  */
 export const getJOSMLoadURL = (osmType, osmIDByType) => (
-  "http://localhost:8111/load_object?objects="
-  + `${osmType.substring(0, 1)}${osmIDByType}`);
+  `http://localhost:8111/load_object?objects=${osmType.substring(0, 1)}${osmIDByType}${osmType === "relation" ? "&relation_members=true" : ""}`);
 
 /**
  * Return URL to open OSM object in iD editor
