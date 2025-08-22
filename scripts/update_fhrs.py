@@ -38,6 +38,10 @@ with session_scope() as session:
         debug("Parsing XML file")
         establishments = fetch_fhrs.parse_xml_establishments(est_xml)
 
+        if not establishments:
+            debug("Authority has no establishments")
+            continue
+
         debug("Replacing authority's establishments in database")
         fetch_fhrs.replace_establishments_for_authority_in_session(
             authority, establishments)
