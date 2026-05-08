@@ -7,8 +7,8 @@ click==8.1.7
 click-plugins==1.1.1
 cligj==0.7.2
 coverage==5.2
-Cython==0.29.22
-Fiona==1.9.4.post1
+Cython==3.2.4
+Fiona==1.10.1
 Flask==1.1.2
 Flask-Limiter==1.4
 fuzzywuzzy==0.18.0
@@ -19,11 +19,11 @@ isort==4.3.21
 itsdangerous==1.1.0
 Jinja2==2.11.3
 lazy-object-proxy==1.4.3
-limits==1.5.1
-MarkupSafe==1.1.1
+limits==5.8.0
+MarkupSafe==3.0.3
 mccabe==0.6.1
 munch==2.5.0
-psycopg2-binary==2.9.9
+psycopg2-binary==2.9.12
 pylint==2.5.3
 python-Levenshtein==0.12.2
 redis==3.5.3
@@ -31,7 +31,7 @@ requests==2.27.1
 retrying==1.3.3
 Shapely==1.7.1
 six==1.15.0
-SQLAlchemy==1.3.18
+SQLAlchemy==2.0.49
 toml==0.10.1
 Unidecode==1.1.1
 urllib3==1.26.8
