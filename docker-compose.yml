@@ -22,7 +22,7 @@ services:
       POSTGRES_PASSWORD: db
       POSTGRES_DB: gregrs_fhodot
   redis:
-    image: redis:7.0.15-bookworm
+    image: redis:8.0.2-bookworm
   imposm:
     environment:
       PGHOST: postgis
