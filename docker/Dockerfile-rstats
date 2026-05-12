@@ -9,8 +9,9 @@ RUN R -e 'remotes::install_version("renv", "1.2.2")'
 
 WORKDIR /fhodot/stats
 COPY stats/renv.lock renv.lock
-ENV RENV_PATHS_LIBRARY /renv-library # outside /fhodot bind mount
+# Set library outside /fhodot so it persists across bind mount
+ENV RENV_PATHS_LIBRARY /renv-library
 RUN R -e 'renv::upgrade()'
 RUN R -e 'renv::restore()'
 
-CMD [ "R", "-q" , "-e", "targets::tar_make(reporter='silent')"]
+CMD [ "R", "-q" , "-e", ".libPaths(c('/renv-library', .libPaths())); targets::tar_make(reporter='silent')"]
