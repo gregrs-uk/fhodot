@@ -1,8 +1,8 @@
 # syntax=docker/dockerfile:1
 
-FROM r-base:4.6.0
+FROM r-base:4.5.0
 
-RUN apt-get update && apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev libpq-dev libuv1-dev pandoc
+RUN apt-get update && apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev libpq-dev pandoc cmake
 
 RUN R -e 'install.packages("remotes", repos = c(CRAN = "https://cloud.r-project.org"))'
 RUN R -e 'remotes::install_version("renv", "1.2.2")'
@@ -11,6 +11,8 @@ WORKDIR /fhodot/stats
 COPY stats/renv.lock renv.lock
 # Set library outside /fhodot so it persists across bind mount
 ENV RENV_PATHS_LIBRARY /renv-library
+ENV USE_BUNDLED_LIBUV 1
+
 RUN R -e 'renv::upgrade()'
 RUN R -e 'renv::restore()'
 
