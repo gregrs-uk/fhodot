@@ -16,4 +16,4 @@ ENV USE_BUNDLED_LIBUV 1
 RUN R -e 'renv::upgrade()'
 RUN R -e 'renv::restore()'
 
-CMD [ "R", "-q" , "-e", ".libPaths(c('/renv-library', .libPaths())); targets::tar_make(reporter='silent')"]
+CMD [ "R", "-q" , "-e", "targets::tar_make(reporter='silent')"]
