@@ -12,14 +12,14 @@ open_names_dir = "import/os_open_names"
 
 # utf-8-sig encoding to remove leading BOM and
 # strip to remove trailing newline
-with open(join(open_names_dir, "DOC/OS_Open_Names_Header.csv"),
+with open(join(open_names_dir, "Doc/OS_Open_Names_Header.csv"),
           "r", encoding="utf-8-sig") as headers_file:
     headers = headers_file.readline().strip().split(",")
 
 with session_scope() as session:
     Session.query(OSPlace).delete() # all places
     Session.query(OSRoad).delete() # all roads
-    data_dir = join(open_names_dir, "DATA")
+    data_dir = join(open_names_dir, "Data")
     for filename in listdir(data_dir):
         info(f"Reading {filename}")
         import_csv(join(data_dir, filename), headers)

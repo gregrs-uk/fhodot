@@ -5,8 +5,8 @@ from fhodot.database import Session, session_scope
 from fhodot.models.district import LocalAuthorityDistrict
 
 
-SHAPEFILE_PATH = "import/boundaries/LAD_MAY_2023_UK_BGC_V2.shp" # pylint: disable=line-too-long
-FIELD_PREFIX = "LAD23"
+SHAPEFILE_PATH = "import/boundaries/LAD_DEC_2025_UK_BGC.shp" # pylint: disable=line-too-long
+FIELD_PREFIX = "LAD25"
 
 with session_scope() as session:
     Session.query(LocalAuthorityDistrict).delete()
