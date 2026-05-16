@@ -17,8 +17,8 @@ if "FLASK_ENV" in environ and environ["FLASK_ENV"] == "development":
 else:
     app = Flask(__name__, static_folder=None)
 
-limiter = Limiter(app,
-                  key_func=get_remote_address,
+limiter = Limiter(key_func=get_remote_address,
+                  app=app,
                   default_limits=["10 per second", "60 per minute"],
                   storage_uri=REDIS_URL)
 
