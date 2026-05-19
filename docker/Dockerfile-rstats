@@ -2,19 +2,23 @@
 
 FROM r-base:4.5.0
 
-RUN apt-get update && apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev libpq-dev pandoc cmake
+# libpq-dev and libssl-dev required by RPostgres
+# cmake required by fs when using bundled libuv as below
+RUN apt-get update && apt-get install -y libpq-dev libssl-dev cmake
 
 RUN R -e 'install.packages("remotes", repos = c(CRAN = "https://cloud.r-project.org"))'
 RUN R -e 'remotes::install_version("renv", "1.2.2")'
 
 WORKDIR /fhodot/stats
+
+# Needed for restore below, other files will be bind mounted
 COPY stats/renv.lock renv.lock
 
-# Set library outside /fhodot so it persists across bind mount
+# Library outside /fhodot/stats so not hidden by the bind mount
 ENV RENV_PATHS_LIBRARY /renv-library
 # For {fs} R package, because dev server doesn't have libuv installed
 # Requires cmake as above
-ENV USE_BUNDLED_LIBUV 1
+ENV USE_BUNDLED_LIBUV=1
 
 RUN R -e 'renv::restore()'
 
