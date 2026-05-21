@@ -44,17 +44,19 @@ class OSMFHRSMapping(DeclarativeBase):
     # so a mapping with a distance of 250m or more between OSMObject and
     # FHRSEstablishment is considered distant
     distant = column_property(
-        select([not_(ST_DWithin(OSMObject.location, FHRSEstablishment.location,
-                                250, use_spheroid=False))]).\
+        select(not_(ST_DWithin(OSMObject.location, FHRSEstablishment.location,
+                               250, use_spheroid=False))).\
         where(and_(OSMObject.osm_id_single_space == osm_id_single_space,
-                   FHRSEstablishment.fhrs_id == fhrs_id)),
+                   FHRSEstablishment.fhrs_id == fhrs_id)).\
+        scalar_subquery(),
         deferred=True # to prevent slowing queries where not required
     )
 
     distance = column_property(
-        select([ST_Distance(OSMObject.location, FHRSEstablishment.location)]).\
+        select(ST_Distance(OSMObject.location, FHRSEstablishment.location)).\
         where(and_(OSMObject.osm_id_single_space == osm_id_single_space,
-                   FHRSEstablishment.fhrs_id == fhrs_id)),
+                   FHRSEstablishment.fhrs_id == fhrs_id)).\
+        scalar_subquery(),
         deferred=True # to prevent slowing queries where not required
     )
 

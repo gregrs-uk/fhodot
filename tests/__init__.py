@@ -31,6 +31,7 @@ class TestCaseWithReconfiguredSession(TestCase):
     def tearDown(self):
         """Roll back transaction and close connection"""
         Session.remove()
-        self.transaction.rollback() # including commits
+        if self.transaction.is_active:
+            self.transaction.rollback() # including commits
         self.connection.close()
         # N.B. doesn't reconfigure Session to bind to engine

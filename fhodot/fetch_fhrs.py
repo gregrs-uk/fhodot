@@ -6,7 +6,7 @@ from xml.etree.ElementTree import fromstring, iselement, ParseError
 from requests import get
 from requests.exceptions import RequestException
 from retrying import retry
-from sqlalchemy import desc, func
+from sqlalchemy import desc, func, inspect
 
 from fhodot.config import USER_AGENT
 from fhodot.database import Session
@@ -225,7 +225,8 @@ def merge_authorities_with_session(authorities):
         raise TypeError(
             f"Expected a list of FHRSAuthority objects, got {authorities}")
 
-    if not FHRSAuthority.__table__.exists(bind=Session.get_bind()):
+    inspector = inspect(Session.get_bind())
+    if not inspector.has_table(FHRSAuthority.__table__.name):
         raise RuntimeError(
             f"Table '{FHRSAuthority.__tablename__}' doesn't exist")
 
@@ -305,7 +306,8 @@ def replace_establishments_for_authority_in_session(authority, establishments):
             "Second argument should be a list of FHRSEstablishment objects, " +
             f"got {establishments}")
 
-    if not FHRSEstablishment.__table__.exists(bind=Session.get_bind()):
+    inspector = inspect(Session.get_bind())
+    if not inspector.has_table(FHRSEstablishment.__table__.name):
         raise RuntimeError(
             f"Table '{FHRSEstablishment.__tablename__}' doesn't exist")
 
