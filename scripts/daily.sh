@@ -1,6 +1,7 @@
 #!/bin/bash
 cd /home/gregrs/fhodot || exit 1
 source venv/bin/activate || exit 1
+scripts/software_versions.sh | diff - software_versions.txt
 # overwrites previous file
 wget --no-verbose \
 	http://download.geofabrik.de/europe/united-kingdom-latest.osm.pbf \
