@@ -1,7 +1,7 @@
 Debian 13.5
 Python 3.13.5
-Node v22.22.2
-psql (PostgreSQL) 18.3 (Debian 18.3-1.pgdg13+1)
+Node v22.22.3
+psql (PostgreSQL) 18.4 (Debian 18.4-1.pgdg13+1)
 PostGIS 3.6 USE_GEOS=1 USE_PROJ=1 USE_STATS=1
 Redis server v=8.0.2 sha=00000000:0 malloc=jemalloc-5.3.0 bits=64 build=b52b02bf0759f5b4
 go version go1.24.4 linux/amd64
