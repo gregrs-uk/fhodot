@@ -36,8 +36,6 @@ class FHRSEstablishment(DeclarativeBase):
     automatically before a query).
     """
 
-    # pylint: disable=no-self-use
-
     __tablename__ = "fhrs_establishments"
 
     fhrs_id = Column(Integer, primary_key=True, autoincrement=False)
@@ -200,8 +198,6 @@ class FHRSEstablishment(DeclarativeBase):
 
 class FHRSAuthority(DeclarativeBase):
     """A Food Hygience Rating Scheme local authority"""
-
-    # pylint: disable=no-self-use
 
     __tablename__ = "fhrs_authorities"
 

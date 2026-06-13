@@ -10,7 +10,7 @@ from fhodot.models.base import DeclarativeBase
 class LocalAuthorityDistrict(DeclarativeBase):
     """A local authority district with a geographical boundary"""
 
-    # pylint: disable=no-self-use,too-few-public-methods
+    # pylint: disable=too-few-public-methods
 
     __tablename__ = "la_districts"
 

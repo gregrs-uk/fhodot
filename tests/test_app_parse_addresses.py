@@ -231,7 +231,7 @@ class TestGetPlaceTag(TestCase):
             all([db_type in expected_types for db_type in db_types]))
 
 
-    def helper_get_example_place(self, place_type): # pylint:disable=no-self-use
+    def helper_get_example_place(self, place_type):
         """Helper function to get an example place of type place_type"""
         place = Session.query(OSPlace).\
             filter(OSPlace.place_type == place_type).\

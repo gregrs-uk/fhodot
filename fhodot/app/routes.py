@@ -154,8 +154,8 @@ def data_postcode():
     result = Session.query(OSMObject, FHRSEstablishment).\
         filter(ST_Intersects(OSMObject.location, envelope)).\
         join(FHRSEstablishment,
-            OSMObject.addr_postcode == FHRSEstablishment.postcode).\
-        order_by(OSMObject.addr_postcode, OSMObject.name, 
+             OSMObject.addr_postcode == FHRSEstablishment.postcode).\
+        order_by(OSMObject.addr_postcode, OSMObject.name,
                  OSMObject.osm_id_single_space, FHRSEstablishment.name,
                  FHRSEstablishment.fhrs_id)
 
@@ -167,7 +167,7 @@ def data_postcode():
         # filtering as part of query not implemented
         if (osm_object.num_matches_same_postcodes +
             osm_object.num_matches_different_postcodes > 0):
-                continue
+            continue
         properties = get_selected_osm_properties(osm_object)
 
         properties["postcodeMatches"] = []
@@ -175,7 +175,7 @@ def data_postcode():
             fhrs_establishment = row[1]
             if (fhrs_establishment.num_matches_same_postcodes +
                 fhrs_establishment.num_matches_different_postcodes > 0):
-                    continue
+                continue
             est_properties = get_selected_fhrs_properties(fhrs_establishment)
             properties["postcodeMatches"].append(est_properties)
         if not properties["postcodeMatches"]:

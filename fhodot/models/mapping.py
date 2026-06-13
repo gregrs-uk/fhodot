@@ -84,7 +84,7 @@ class OSMFHRSMapping(DeclarativeBase):
 
 
     @postcodes_match.expression
-    def postcodes_match(cls): # pylint: disable=no-self-argument,no-self-use
+    def postcodes_match(cls): # pylint: disable=no-self-argument
         """Return value depends on whether OSM/FHRS postcodes match
 
         Checks addr:postcode and not:addr:postcode for a match and

@@ -10,7 +10,7 @@ from fhodot.models.base import DeclarativeBase
 class Statistic:
     """Mixin class with common definitions for statistics"""
 
-    # pylint: disable=no-self-use,too-few-public-methods
+    # pylint: disable=too-few-public-methods
 
     date = Column(Date)
     statistic = Column(Text)
@@ -20,7 +20,7 @@ class Statistic:
 class FHRSAuthorityStatistic(DeclarativeBase, Statistic):
     """Statistic relating to an FHRS authority on a particular date"""
 
-    # pylint: disable=no-self-use,too-few-public-methods
+    # pylint: disable=too-few-public-methods
 
     __tablename__ = "stats_fhrs"
     __table_args__ = (
@@ -49,7 +49,7 @@ class FHRSAuthorityStatistic(DeclarativeBase, Statistic):
 class OSMLocalAuthorityDistrictStatistic(DeclarativeBase, Statistic):
     """Statistic relating to OSM objects in a district on a date"""
 
-    # pylint: disable=no-self-use,too-few-public-methods
+    # pylint: disable=too-few-public-methods
 
     __tablename__ = "stats_osm"
     __table_args__ = (
