@@ -24,12 +24,12 @@ class OSMObject(DeclarativeBase):
     osm_id_single_space = Column(BigInteger, primary_key=True,
                                  autoincrement=False)
     osm_id_by_type = column_property(cast(case(
-        [(osm_id_single_space <= -1e17, 0 - osm_id_single_space - 1e17),
-         (osm_id_single_space < 0, 0 - osm_id_single_space)],
+        (osm_id_single_space <= -1e17, 0 - osm_id_single_space - 1e17),
+        (osm_id_single_space < 0, 0 - osm_id_single_space),
         else_=osm_id_single_space), BigInteger))
     osm_type = column_property(case(
-        [(osm_id_single_space <= -1e17, "relation"),
-         (osm_id_single_space < 0, "way")],
+        (osm_id_single_space <= -1e17, "relation"),
+        (osm_id_single_space < 0, "way"),
         else_="node"))
     location = Column(Geography)
     lat = column_property(ST_Y(cast(location, Geometry)))

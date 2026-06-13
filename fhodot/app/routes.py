@@ -8,7 +8,7 @@ from logging import error
 from flask import abort, make_response, request
 from geoalchemy2.functions import ST_Intersects
 from geojson import dumps, Feature, FeatureCollection
-from sqlalchemy.orm import joinedload, undefer
+from sqlalchemy.orm import joinedload
 
 from fhodot.app import app, limiter
 from fhodot.app.fhrs import (get_selected_fhrs_properties, get_osm_mappings,
@@ -39,8 +39,8 @@ def data_distant():
 
     osm_objects = query_within_bbox(OSMObject, get_bbox(request.args)).\
         filter(OSMObject.fhrs_mappings.any(OSMFHRSMapping.distant)).\
-        options(joinedload("fhrs_mappings").joinedload("fhrs_establishment"),
-                undefer("fhrs_mappings.distance"))
+        options(joinedload(OSMObject.fhrs_mappings)
+                .joinedload(OSMFHRSMapping.fhrs_establishment))
 
     point_features = []
     line_features = []
@@ -75,8 +75,8 @@ def data_fhrs():
         abort(413)
     establishments = query_within_bbox(FHRSEstablishment, bbox).\
         order_by(FHRSEstablishment.postcode, FHRSEstablishment.name).\
-        options(joinedload("osm_mappings").joinedload("osm_object"),
-                undefer("osm_mappings.distance"))
+        options(joinedload(FHRSEstablishment.osm_mappings)
+                .joinedload(OSMFHRSMapping.osm_object))
 
     features = []
     for est in establishments:
@@ -87,8 +87,9 @@ def data_fhrs():
 
     establishments_without_location = (
         query_fhrs_without_location_for_districts_in_bbox(bbox).\
-        options(joinedload("osm_mappings").joinedload("osm_object"),
-                joinedload("authority")))
+        options(joinedload(FHRSEstablishment.osm_mappings)
+                .joinedload(OSMFHRSMapping.osm_object),
+                joinedload(FHRSEstablishment.authority)))
 
     for est in establishments_without_location:
         properties = get_selected_fhrs_properties(est)
@@ -113,8 +114,8 @@ def data_osm():
         abort(413)
     osm_objects = query_within_bbox(OSMObject, bbox).\
         order_by(OSMObject.addr_postcode, OSMObject.name).\
-        options(joinedload("fhrs_mappings").joinedload("fhrs_establishment"),
-                undefer("fhrs_mappings.distance"))
+        options(joinedload(OSMObject.fhrs_mappings)
+                .joinedload(OSMFHRSMapping.fhrs_establishment))
 
     features = []
     for osm_object in osm_objects:
@@ -256,7 +257,7 @@ def data_surveyme():
 
     query = Session.query(OSMFHRSMapping).\
         filter(OSMFHRSMapping.fhrs_establishment == None).\
-        options(joinedload("osm_object")) # pylint: disable=singleton-comparison
+        options(joinedload(OSMFHRSMapping.osm_object)) # pylint: disable=singleton-comparison
 
     string_io = StringIO()
     csv_writer = writer(string_io)

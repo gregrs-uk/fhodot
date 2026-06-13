@@ -11,7 +11,7 @@ from sqlalchemy.orm import joinedload, Load
 from unidecode import unidecode
 
 from fhodot.database import Session
-from fhodot.models import FHRSEstablishment, OSMObject
+from fhodot.models import FHRSEstablishment, OSMFHRSMapping, OSMObject
 from fhodot.app.utils import get_envelope
 
 
@@ -82,8 +82,8 @@ def get_nearby_combinations(bbox, distance=160):
             # OSM and FHRS within specified distance
             ST_DWithin(OSMObject.location, FHRSEstablishment.location,
                        distance, use_spheroid=False)).\
-        options(Load(OSMObject).load_only("name"),
-                Load(FHRSEstablishment).load_only("name"))
+        options(Load(OSMObject).load_only(OSMObject.name),
+                Load(FHRSEstablishment).load_only(FHRSEstablishment.name))
 
 
 def get_suggested_matches_by_osm_id(bbox):
@@ -124,7 +124,8 @@ def get_full_osm_objects_query(suggested_matches_by_osm_id):
     osm_ids = suggested_matches_by_osm_id.keys()
     return Session.query(OSMObject).\
         filter(OSMObject.osm_id_single_space.in_(osm_ids)).\
-        options(joinedload("fhrs_mappings").joinedload("fhrs_establishment"))
+        options(joinedload(OSMObject.fhrs_mappings)
+                .joinedload(OSMFHRSMapping.fhrs_establishment))
 
 
 def get_full_fhrs_establishments_dict(suggested_matches_by_osm_id):

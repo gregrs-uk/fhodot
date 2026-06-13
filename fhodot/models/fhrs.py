@@ -18,6 +18,7 @@ from sqlalchemy.orm import column_property, joinedload, relationship, validates
 
 from fhodot.database import Session
 from fhodot.models.base import DeclarativeBase
+from fhodot.models.district import LocalAuthorityDistrict
 
 
 # 1st capture group:
@@ -252,7 +253,8 @@ class FHRSAuthority(DeclarativeBase):
                     FHRSEstablishment.postcode_original.is_(None))).\
             options(
                 # fhrs_authority used by add_authority_districts_in_session
-                joinedload("district").joinedload("fhrs_authority"))
+                joinedload(FHRSEstablishment.district)
+                .joinedload(LocalAuthorityDistrict.fhrs_authority))
 
         # only use establishments that have a location set and are
         # within a district
