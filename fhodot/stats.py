@@ -8,8 +8,9 @@ from sqlalchemy.orm import joinedload
 
 from fhodot.database import Session
 from fhodot.models import (FHRSAuthority, FHRSAuthorityStatistic,
-                           LocalAuthorityDistrict,
-                           OSMLocalAuthorityDistrictStatistic)
+                           FHRSEstablishment, LocalAuthorityDistrict,
+                           OSMLocalAuthorityDistrictStatistic, OSMFHRSMapping,
+                           OSMObject)
 
 
 FHRS_STATUSES = ["matched_same_postcodes", "matched_different_postcodes",
@@ -55,8 +56,9 @@ def get_fhrs_stats_by_authority():
     authority_stats = []
     for authority_code in authority_codes:
         authority = Session.query(FHRSAuthority).\
-            options(joinedload("establishments").joinedload("osm_mappings").
-                    joinedload("osm_object")).\
+            options(joinedload(FHRSAuthority.establishments)
+                    .joinedload(FHRSEstablishment.osm_mappings)
+                    .joinedload(OSMFHRSMapping.osm_object)).\
             get(authority_code)
 
         debug(f"Calculating statistics for FHRS authority {authority.name}")
@@ -106,8 +108,9 @@ def get_osm_stats_by_district():
     district_stats = []
     for district_code in district_codes:
         district = Session.query(LocalAuthorityDistrict).\
-            options(joinedload("osm_objects").joinedload("fhrs_mappings").
-                    joinedload("fhrs_establishment")).\
+            options(joinedload(LocalAuthorityDistrict.osm_objects)
+                    .joinedload(OSMObject.fhrs_mappings)
+                    .joinedload(OSMFHRSMapping.fhrs_establishment)).\
             get(district_code)
 
         debug(f"Calculating OSM statistics for district {district.name}")
